@@ -11,9 +11,8 @@ const sections = {
     'apple-tv': `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_networks=2552`
 };
 
-// Fetch and display data
 // Fetch and display data with a customizable limit
-async function fetchContent(sectionId, url, limit = 10) {
+async function fetchContent(sectionId, url, limit = 12) {
     try {
       const response = await fetch(url);
       const data = await response.json();
@@ -26,7 +25,7 @@ async function fetchContent(sectionId, url, limit = 10) {
   // Expand to show 50 items
   function expandSection(sectionId) {
     const sectionUrl = sections[sectionId];
-    fetchContent(sectionId, sectionUrl, 50);
+    fetchContent(sectionId, sectionUrl, 24);
   
     // Update button visibility
     document.querySelector(`#${sectionId} .show-more`).style.display = 'none';
@@ -36,7 +35,7 @@ async function fetchContent(sectionId, url, limit = 10) {
   // Collapse back to 10 items
   function collapseSection(sectionId) {
     const sectionUrl = sections[sectionId];
-    fetchContent(sectionId, sectionUrl, 10);
+    fetchContent(sectionId, sectionUrl, 12);
   
     // Update button visibility
     document.querySelector(`#${sectionId} .collapse`).style.display = 'none';

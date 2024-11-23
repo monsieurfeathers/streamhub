@@ -7,7 +7,7 @@ body {
 /* Navbar */
 header {
     background-color: #0e0e1b;
-    padding: 1rem;
+    padding: 0.2rem;
 }
 
 nav ul {
@@ -15,7 +15,7 @@ nav ul {
     display: flex;
     flex-direction: row;
     gap: 2rem;
-    padding: 0 20px ;
+    padding: 0 20px;
     margin: 12px;
     border: 2px #121212;
 }
@@ -26,11 +26,50 @@ nav ul li a {
     font-size: 1.2rem;
     font-weight: bold;
     transition: color 0.3s;
+    border: 2px solid red;
 }
 
 nav ul li a:hover {
     color: #ff4747;
 }
+
+/* Search Bar Styling */
+.search-bar {
+    display: flex;
+    align-items: right;
+    margin-left: auto;
+    background-color: #1f1f1f;
+    border-radius: 5px;
+    padding: 0.5rem;
+    width: 40%;
+    border: 2px solid red;
+  }
+  
+  .search-bar input {
+    padding: 0.5rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #0e0e1b;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+  }
+  
+  .search-bar button {
+    padding: 0.5rem 1rem;
+    background-color: #ff4747;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-left: 0.5rem;
+  }
+  
+  .search-bar button:hover {
+    background-color: #e63e3e;
+  }
+  
 
 /* Sections */
 main {
@@ -51,7 +90,7 @@ section h2 {
 .grid-container {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 1rem;
+    gap: 1.8rem;
 }
 .grid-item {
     border-radius: 10px;
@@ -77,3 +116,20 @@ section h2 {
     font-size: 1.4vw;
     margin: 0.6rem 0;
 }
+
+.show-more, .collapse {
+    margin: 1rem auto;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    background-color: #ff4747;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+  }
+  
+  .show-more:hover, .collapse:hover {
+    background-color: #e63e3e;
+  }
+  

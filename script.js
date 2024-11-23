@@ -12,15 +12,37 @@ const sections = {
 };
 
 // Fetch and display data
-async function fetchContent(sectionId, url) {
+// Fetch and display data with a customizable limit
+async function fetchContent(sectionId, url, limit = 10) {
     try {
-        const response = await fetch(url);
-        const data = await response.json();
-        populateSection(sectionId, data.results.slice(0, 10));
+      const response = await fetch(url);
+      const data = await response.json();
+      populateSection(sectionId, data.results.slice(0, limit));
     } catch (error) {
-        console.error(`Error fetching data for ${sectionId}:`, error);
+      console.error(`Error fetching data for ${sectionId}:`, error);
     }
-}
+  }
+  
+  // Expand to show 50 items
+  function expandSection(sectionId) {
+    const sectionUrl = sections[sectionId];
+    fetchContent(sectionId, sectionUrl, 50);
+  
+    // Update button visibility
+    document.querySelector(`#${sectionId} .show-more`).style.display = 'none';
+    document.querySelector(`#${sectionId} .collapse`).style.display = 'block';
+  }
+  
+  // Collapse back to 10 items
+  function collapseSection(sectionId) {
+    const sectionUrl = sections[sectionId];
+    fetchContent(sectionId, sectionUrl, 10);
+  
+    // Update button visibility
+    document.querySelector(`#${sectionId} .collapse`).style.display = 'none';
+    document.querySelector(`#${sectionId} .show-more`).style.display = 'block';
+  }
+  
 
 // Populate a section with content
 function populateSection(sectionId, items) {
@@ -49,3 +71,48 @@ function populateSection(sectionId, items) {
 Object.entries(sections).forEach(([sectionId, url]) => {
     fetchContent(sectionId, url);
 });
+
+async function handleSearch() {
+    const query = document.getElementById('search-input').value.trim();
+    if (!query) {
+      alert('Please enter a search term!');
+      return;
+    }
+  
+    const url = `${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+  
+      // Redirect to the results page or render results dynamically
+      displaySearchResults(data.results);
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+    }
+  }
+  
+  function displaySearchResults(results) {
+    const mainContent = document.querySelector('main');
+    mainContent.innerHTML = `
+      <section id="search-results">
+        <h2>Search Results</h2>
+        <div class="grid-container">
+          ${results
+            .map(result => {
+              const title = result.title || result.name;
+              const image = result.poster_path
+                ? `${IMAGE_URL}${result.poster_path}`
+                : 'https://via.placeholder.com/200x300?text=No+Image';
+              return `
+                <div class="grid-item">
+                  <img src="${image}" alt="${title}">
+                  <h3>${title}</h3>
+                </div>
+              `;
+            })
+            .join('')}
+        </div>
+      </section>
+    `;
+  }
+  

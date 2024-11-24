@@ -124,7 +124,7 @@ async function fetchModalData(mediaType, id) {
   let url;
 
   if (mediaType === "movie") {
-    url = `${BASE_URL}/movie/${id}?api_key=${API_KEY}&language=en-US&append_to_response=images`;
+    url = `${BASE_URL}/movie/${id}?api_key=${API_KEY}&language=en-US&append_to_response=images&include_image_language=en`;
   } else if (mediaType === "tv") {
     url = `${BASE_URL}/tv/${id}?api_key=${API_KEY}&language=en-US&append_to_response=images&include_image_language=en`;
   }
@@ -144,7 +144,8 @@ function displayModal(mediaType, data) {
  // const modal = document.querySelector(".modal-content");
   const modal = document.getElementById('info-modal');
   const details = document.getElementById('modal-details');
-
+  const logo = data.images.logos[0].file_path;
+  
   if (mediaType === "movie") {
     details.innerHTML = `
       <div class="modal-media">
@@ -153,13 +154,14 @@ function displayModal(mediaType, data) {
         </div>
         <div class="modal-info">
           <div class="modal-title">
-            <h1>${data.title || data.name}</h1>
+            <img src="${IMAGE_URL}${logo}" alt="${data.name}">
             <p><strong>${data.genres.map(genre => genre.name).join(", ")}</strong></p>
           </div>
           <div>
             <p>${data.overview || 'No description available.'}</p>
             <p><strong>Release Date:</strong> ${data.release_date || data.first_air_date}</p>
           </div>
+          <button>Watch</button>
         </div>
       </div>
     `;
@@ -167,7 +169,7 @@ function displayModal(mediaType, data) {
 
   } else 
   if (mediaType === "tv") {
-    const seasons = data.seasons.reverse(); // Reverse the seasons array
+    const seasons = data.seasons.reverse();
     details.innerHTML = `
       <div class="modal-media">
         <div class="modal-cover">
@@ -175,7 +177,7 @@ function displayModal(mediaType, data) {
         </div>
         <div class="modal-info">
           <div class="modal-title">
-            <h1>${data.name}</h1>
+            <img src="${IMAGE_URL}${logo}" alt="${data.name}">
             <p><strong> ${data.genres.map(genre => genre.name).join(", ")}</strong></p>
           </div>
           <p><strong></strong> ${data.overview}</p>

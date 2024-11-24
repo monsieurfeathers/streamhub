@@ -326,6 +326,7 @@ option {
   
   .player-container {
     position: relative;
+    margin-top: 2vh;
     width: 86%;
     aspect-ratio: 16 / 9;
   }

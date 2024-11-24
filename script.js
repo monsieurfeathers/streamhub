@@ -103,46 +103,41 @@ function displaySearchResults(results) {
   `;
 }
 
+//fetch Metadata
+async function fetchMetaData(mediaType, id) {
+  try {
+    let url;
 
-// Open modal and fetch details
+    if (mediaType === "movie") {
+      url = `${BASE_URL}/movie/${id}?api_key=${API_KEY}&language=en-US&append_to_response=images&include_image_language=en`;
+    } else if (mediaType === "tv") {
+      url = `${BASE_URL}/tv/${id}?api_key=${API_KEY}&language=en-US&append_to_response=images&include_image_language=en`;
+      }
+      const response = await fetch(url);
+      const data = await response.json();
+      return {data, mediaType};
+    } catch (error) {
+      console.error("Error fetching modal data:", error);
+      return null;
+    }
+}
+
 async function openModal(event) {
   const gridItem = event.target.closest('.grid-item');
   if (gridItem) {
     const mediaType = gridItem.dataset.mediaType;
     const id = gridItem.dataset.id;
 
-    try {
-      const response = await fetch(`${BASE_URL}/${mediaType}/${id}?api_key=${API_KEY}`);
-      const data = await response.json();
-      fetchModalData(mediaType,id);
-    } catch (error) {
-      console.error('Error fetching item details:', error);
-    }
-  }
-}
-
-async function fetchModalData(mediaType, id) {
-  let url;
-
-  if (mediaType === "movie") {
-    url = `${BASE_URL}/movie/${id}?api_key=${API_KEY}&language=en-US&append_to_response=images&include_image_language=en`;
-  } else if (mediaType === "tv") {
-    url = `${BASE_URL}/tv/${id}?api_key=${API_KEY}&language=en-US&append_to_response=images&include_image_language=en`;
-  }
-
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    displayModal(mediaType, data);
-  } catch (error) {
-    console.error("Error fetching modal data:", error);
+  fetchMetaData(mediaType, id).then(({mediaType, data}) => {
+      displayModal(mediaType, data);
+  });
   }
 }
 
 
 // Display modal with fetched data
 function displayModal(mediaType, data) {
- // const modal = document.querySelector(".modal-content");
+  //const modal = document.querySelector(".modal-content");
   const modal = document.getElementById('info-modal');
   const details = document.getElementById('modal-details');
   const logo = data.images.logos[0].file_path;

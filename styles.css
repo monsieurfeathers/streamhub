@@ -166,6 +166,13 @@ section h2 {
 }
 
 #modal-details {
+    display: block;
+    gap: 4vw;
+    overflow: scroll;
+    height: 100%;
+}
+
+.modal-media {
     display: flex;
     flex-direction: row;
     gap: 4vw;
@@ -173,9 +180,8 @@ section h2 {
   
 .modal-cover {
     align-items: flex-start;
-    width: 30%;
+    width: 24%;
     height: 70%;
-    border: 2px solid red;
 }
 
 .modal-cover img {
@@ -183,8 +189,9 @@ section h2 {
 }
 
 .modal-info {
-    width: 60%;
-    border: 2px solid red;
+    margin-left: auto;
+    align-content: end;
+    width: 64%;
     padding: 1rem 2rem;
 }
 
@@ -192,6 +199,11 @@ section h2 {
     font-size: 2.4rem;
 }
 
+.modal-title p {
+    margin: 0;
+    padding: 0;
+}
+  
 .close-btn {
     position: absolute;
     top: 10px;
@@ -199,4 +211,81 @@ section h2 {
     font-size: 24px;
     cursor: pointer;
 }
+
+.modal.visible {
+    display: flex;
+}
+
+/*.season-info {
+    margin-top: 1rem;
+    background-color: #1f1f1f;
+    padding: 1rem;
+    border-radius: 10px;
+}
   
+.season-info img {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+*/
+
+.seasons-menu{
+    padding: 0.8rem 0;
+}
+
+select {
+    background-color:#30303d ;
+    color: white;
+    padding: 0.5rem;
+    border: 0px;
+    border-radius: 2px;
+    font-size: 18px;
+}
+option {
+    padding: 5px;
+    background-color:#30303d;
+    }
+
+.episode-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.episode {
+    display: flex;
+    flex-basis: 46%;
+    align-items: flex-start;
+    background-color: #30303d;
+    justify-content: space-between;
+    padding: 1rem;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.episode-info {
+    display: block;
+    justify-content: space-between;
+    padding-left: 2rem;
+}
+
+.episode img {
+    width: 36%;
+    object-fit: cover;
+    border-radius: 5px;
+    flex-shrink: 0;
+}
+
+.episode h4, .episode p {
+    font-size: 1rem;
+    text-align: left;
+    margin: 0;
+    padding-bottom: 0.4rem;
+
+}
+

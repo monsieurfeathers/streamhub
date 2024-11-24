@@ -4,8 +4,8 @@ const IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
 // Sections to populate
 const sections = {
-  'trending-movies': `${BASE_URL}/trending/movie/week?api_key=${API_KEY}`,
-  'trending-series': `${BASE_URL}/trending/tv/week?api_key=${API_KEY}`,
+  'trending-movies': `${BASE_URL}/trending/movie/day?api_key=${API_KEY}`,
+  'trending-series': `${BASE_URL}/trending/tv/day?api_key=${API_KEY}`,
   'netflix': `${BASE_URL}/trending/movie?api_key=${API_KEY}&with_networks=213`,
   'amazon-prime': `${BASE_URL}/trending/movie?api_key=${API_KEY}&with_networks=1024`,
   'apple-tv': `${BASE_URL}/trending/movie?api_key=${API_KEY}&with_networks=2552`
@@ -113,122 +113,34 @@ async function openModal(event) {
     try {
       const response = await fetch(`${BASE_URL}/${mediaType}/${id}?api_key=${API_KEY}`);
       const data = await response.json();
-      fetchModalData(mediaType,id);
+      displayModal(data, mediaType);
     } catch (error) {
       console.error('Error fetching item details:', error);
     }
   }
 }
 
-async function fetchModalData(mediaType, id) {
-  let url;
-
-  if (mediaType === "movie") {
-    url = `${BASE_URL}/movie/${id}?api_key=${API_KEY}&language=en-US&append_to_response=images`;
-  } else if (mediaType === "tv") {
-    url = `${BASE_URL}/tv/${id}?api_key=${API_KEY}&language=en-US&append_to_response=images&include_image_language=en`;
-  }
-
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    displayModal(mediaType, data);
-  } catch (error) {
-    console.error("Error fetching modal data:", error);
-  }
-}
-
-
 // Display modal with fetched data
-function displayModal(mediaType, data) {
- // const modal = document.querySelector(".modal-content");
+function displayModal(data, mediaType) {
   const modal = document.getElementById('info-modal');
   const details = document.getElementById('modal-details');
-
-  if (mediaType === "movie") {
-    details.innerHTML = `
-      <div class="modal-media">
-        <div class="modal-cover">
-            <img src="${IMAGE_URL}${data.poster_path}" alt="${data.title || data.name}">
-        </div>
-        <div class="modal-info">
-          <div class="modal-title">
+  details.innerHTML = `   
+    <div class="modal-cover">
+        <img src="${IMAGE_URL}${data.poster_path}" alt="${data.title || data.name}">
+    </div>
+    <div class="modal-info">
+        <div class="modal-title">
             <h1>${data.title || data.name}</h1>
-            <p><strong>${data.genres.map(genre => genre.name).join(", ")}</strong></p>
-          </div>
-          <div>
+        </div>
+        <div>
             <p>${data.overview || 'No description available.'}</p>
             <p><strong>Release Date:</strong> ${data.release_date || data.first_air_date}</p>
-          </div>
         </div>
-      </div>
-    `;
-    modal.style.display = 'block';
+    </div>
 
-  } else 
-  if (mediaType === "tv") {
-    const seasons = data.seasons.reverse(); // Reverse the seasons array
-    details.innerHTML = `
-      <div class="modal-media">
-        <div class="modal-cover">
-          <img src="${IMAGE_URL}${data.poster_path}" alt="${data.name}">
-        </div>
-        <div class="modal-info">
-          <div class="modal-title">
-            <h1>${data.name}</h1>
-            <p><strong> ${data.genres.map(genre => genre.name).join(", ")}</strong></p>
-          </div>
-          <p><strong></strong> ${data.overview}</p>
-          <p><strong>First Air Date:</strong> ${data.first_air_date}</p>
-        </div>
-      </div>
-      <div class="season-info">
-        <div class="seasons-menu">
-          <select id="season-dropdown">
-            ${seasons
-              .map(season => `
-                <option value="${season.season_number}">${season.name}</option>
-              `)
-              .join("")}
-          </select>
-        </div>
-        <div class="episode-container" id="episode-container">
-        </div>
-      </div>
-    `;
-    modal.style.display = 'block';
-
-    // Fetch and display episodes for the selected season
-    const seasonDropdown = document.getElementById('season-dropdown');
-    const episodeContainer = document.getElementById('episode-container');
-
-    seasonDropdown.addEventListener('change', async (event) => {
-      const selectedSeason = event.target.value;
-      try {
-        const response = await fetch(`${BASE_URL}/tv/${data.id}/season/${selectedSeason}?api_key=${API_KEY}`);
-        const seasonData = await response.json();
-        episodeContainer.innerHTML = seasonData.episodes
-          .map(episode => `
-            <div class="episode">
-              <img src="${episode.still_path ? IMAGE_URL + episode.still_path : 'https://via.placeholder.com/300x169?text=No+Image'}" alt="Episode ${episode.episode_number}">
-              <div class="episode-info">
-                <h4>${episode.episode_number}. ${episode.name}</h4>
-                <p><strong> ${episode.air_date}</strong></p>
-                <p>${episode.overview || "No overview available"}</p>
-              </div>
-            </div>
-          `)
-          .join("");
-      } catch (error) {
-        console.error('Error fetching season details:', error);
-        episodeContainer.innerHTML = `<p>Failed to load episodes for Season ${selectedSeason}.</p>`;
-      }
-    });
-
-    seasonDropdown.dispatchEvent(new Event('change'));
-  }
+  `;
+  modal.style.display = 'block';
 }
-
 
 // Close modal on click
 document.querySelector('.close-btn').addEventListener('click', () => {

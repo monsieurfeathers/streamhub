@@ -146,6 +146,7 @@ function displayModal(mediaType, data) {
   const modal = document.getElementById('info-modal');
   const details = document.getElementById('modal-details');
   const logo = data.images.logos[0].file_path;
+  const id = data.id;
   
   if (mediaType === "movie") {
     details.innerHTML = `
@@ -162,7 +163,7 @@ function displayModal(mediaType, data) {
             <p>${data.overview || 'No description available.'}</p>
             <p><strong>Release Date:</strong> ${data.release_date || data.first_air_date}</p>
           </div>
-          <button class="watch-btn">Watch</button>
+          <button class="watch-btn" data-id="${id}">Watch</button>
         </div>
       </div>
     `;
@@ -212,7 +213,11 @@ function displayModal(mediaType, data) {
         const seasonData = await response.json();
         episodeContainer.innerHTML = seasonData.episodes
           .map(episode => `
-            <div class="episode">
+            <div class="episode" 
+              data-name="${data.name}"
+              data-id="${data.id}"
+              data-season="${selectedSeason}" 
+              data-episode="${episode.episode_number}">
               <img src="${episode.still_path ? IMAGE_URL + episode.still_path : 'https://via.placeholder.com/300x169?text=No+Image'}" alt="Episode ${episode.episode_number}">
               <div class="episode-info">
                 <h4>${episode.episode_number}. ${episode.name}</h4>
@@ -231,6 +236,79 @@ function displayModal(mediaType, data) {
     seasonDropdown.dispatchEvent(new Event('change'));
   }
 }
+
+document.addEventListener("click", (event) => {
+  // Handle Watch Button (Movie)
+  if (event.target.classList.contains("watch-btn")) {
+    const id = event.target.dataset.id; // Get the movie ID
+    loadWatchPage("movie", id);
+  }
+
+  // Handle Episode Image Click (TV)
+  if (event.target.closest(".episode img")) {
+    const episodeElement = event.target.closest(".episode");
+    const name = episodeElement.dataset.name;
+    const id = episodeElement.dataset.id;
+    const season = episodeElement.dataset.season;
+    const episode = episodeElement.dataset.episode;
+    loadWatchPage("tv", name, id, season, episode);
+  }
+});
+
+function loadWatchPage(mediaType, name, id, season, episode) {
+  let iframeSrc;
+
+  if (mediaType === "movie") {
+    iframeSrc = `https://vidlink.pro/movie/${id}`;
+  } else if (mediaType === "tv") {
+    iframeSrc = `https://vidlink.pro/tv/${id}/${season}/${episode}`;
+  }
+
+  // Create the embed page
+  const watchPage = `
+    <div class="watch-page">
+    <div class="player-container">
+        <!-- Placeholder until iframe loads -->
+        <div class="loading">Loading player...</div>
+        <iframe
+          src="${iframeSrc}"
+          frameborder="0"
+          allowfullscreen
+          style="display: none;"
+          onload="showIframe(this)"
+        ></iframe>
+      </div>
+    <h1>${name}:S${season}E${episode}</h1>
+    </div>
+  `;
+
+  // Replace main content with the watch page
+  const mainContent = document.querySelector("main");
+  mainContent.innerHTML = watchPage;
+}
+
+
+function showIframe(iframe) {
+  iframe.style.display = "block";
+  document.querySelector(".loading").style.display = "none";
+}
+
+
+
+function showIframe(iframe) {
+  // Hide the loading div and show the iframe
+  iframe.style.display = "block";
+  document.querySelector(".loading").style.display = "none";
+}
+
+// Listen to popstate events for navigation
+window.addEventListener("popstate", (event) => {
+  if (event.state?.page === "watch") {
+    loadWatchPage(event.state.id);
+  } else {
+    loadHomePage(); // Custom function to load home page
+  }
+});
 
 // Close modal on click
 document.querySelector('.close-btn').addEventListener('click', () => {

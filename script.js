@@ -103,6 +103,7 @@ function displaySearchResults(results) {
   `;
 }
 
+
 // Open modal and fetch details
 async function openModal(event) {
   const gridItem = event.target.closest('.grid-item');
@@ -161,7 +162,7 @@ function displayModal(mediaType, data) {
             <p>${data.overview || 'No description available.'}</p>
             <p><strong>Release Date:</strong> ${data.release_date || data.first_air_date}</p>
           </div>
-          <button>Watch</button>
+          <button class="watch-btn">Watch</button>
         </div>
       </div>
     `;
@@ -230,7 +231,6 @@ function displayModal(mediaType, data) {
     seasonDropdown.dispatchEvent(new Event('change'));
   }
 }
-
 
 // Close modal on click
 document.querySelector('.close-btn').addEventListener('click', () => {

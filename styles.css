@@ -294,3 +294,17 @@ option {
 
 }
 
+.watch-btn {
+    margin: 1rem auto;
+    padding: 0.6rem 1.2rem;
+    font-size: 1.2rem;
+    background-color: #ff4747;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+  
+.watch-btn:hover, .watch-btn:hover {
+    background-color: #e63e3e;
+}

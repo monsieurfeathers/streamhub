@@ -147,23 +147,24 @@ function displayModal(mediaType, data) {
   const details = document.getElementById('modal-details');
   const logo = data.images.logos[0].file_path;
   const id = data.id;
+  const name = data.name || data.title || data.original_title;
   
   if (mediaType === "movie") {
     details.innerHTML = `
       <div class="modal-media">
         <div class="modal-cover">
-            <img src="${IMAGE_URL}${data.poster_path}" alt="${data.title || data.name}">
+            <img src="${IMAGE_URL}${data.poster_path}" alt="${name}">
         </div>
         <div class="modal-info">
           <div class="modal-title">
-            <img src="${IMAGE_URL}${logo}" alt="${data.name}">
+            <img src="${IMAGE_URL}${logo}" alt="${name}">
             <p><strong>${data.genres.map(genre => genre.name).join(", ")}</strong></p>
           </div>
           <div>
             <p>${data.overview || 'No description available.'}</p>
             <p><strong>Release Date:</strong> ${data.release_date || data.first_air_date}</p>
           </div>
-          <button class="watch-btn" data-id="${id}">Watch</button>
+          <button class="watch-btn" data-name="${name}" data-id="${id}">Watch</button>
         </div>
       </div>
     `;
@@ -241,7 +242,8 @@ document.addEventListener("click", (event) => {
   // Handle Watch Button (Movie)
   if (event.target.classList.contains("watch-btn")) {
     const id = event.target.dataset.id; // Get the movie ID
-    loadWatchPage("movie", id);
+    const name = event.target.dataset.name;
+    loadWatchPage("movie", name, id);
   }
 
   // Handle Episode Image Click (TV)
@@ -259,8 +261,10 @@ function loadWatchPage(mediaType, name, id, season, episode) {
   let iframeSrc;
 
   if (mediaType === "movie") {
+    info = `${name}`;
     iframeSrc = `https://vidlink.pro/movie/${id}`;
   } else if (mediaType === "tv") {
+    info = `${name}:S${season}E${episode}`;
     iframeSrc = `https://vidlink.pro/tv/${id}/${season}/${episode}`;
   }
 
@@ -278,7 +282,7 @@ function loadWatchPage(mediaType, name, id, season, episode) {
           onload="showIframe(this)"
         ></iframe>
       </div>
-    <h1>${name}:S${season}E${episode}</h1>
+    <h1>${info}</h1>
     </div>
   `;
 

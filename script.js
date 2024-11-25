@@ -1,14 +1,14 @@
 const API_KEY = '213d830aae3a2f7b67e37f157405a42e';
-const BASE_URL = 'https://api.themoviedb.org/3';
+const BASE_URL = 'https://api.tmdb.org/3';
 const IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
 // Sections to populate
 const sections = {
-  'trending-movies': `${BASE_URL}/trending/movie/week?api_key=${API_KEY}`,
+  'trending-movies': `${BASE_URL}/trending/movie/week?api_key=${API_KEY}&with_release_type=4,page=2`,
   'trending-series': `${BASE_URL}/trending/tv/week?api_key=${API_KEY}`,
-  'netflix': `${BASE_URL}/trending/movie?api_key=${API_KEY}&with_networks=213`,
-  'amazon-prime': `${BASE_URL}/trending/movie?api_key=${API_KEY}&with_networks=1024`,
-  'apple-tv': `${BASE_URL}/trending/movie?api_key=${API_KEY}&with_networks=2552`
+  'netflix': `${BASE_URL}/discover/movie?api_key=${API_KEY}&networks=Netflix`,
+  'amazon-prime': `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_networks=1024`,
+  'apple-tv': `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_networks=2552`
 };
 
 // Function to render grid items
@@ -147,19 +147,22 @@ function displayModal(mediaType, data) {
   //const modal = document.querySelector(".modal-content");
   const modal = document.getElementById('info-modal');
   const details = document.getElementById('modal-details');
-  const logo = data.images.logos[0].file_path;
   const id = data.id;
   const name = data.name || data.title || data.original_title;
+  
+  const logo = data.images?.logos?.[0]?.file_path
+    ? `<img src="${IMAGE_URL}${data.images.logos[0].file_path}" alt="Logo">`
+    : `<h1>${name}</h1>`;
   
   if (mediaType === "movie") {
     details.innerHTML = `
       <div class="modal-media">
         <div class="modal-cover">
-            <img src="${IMAGE_URL}${data.poster_path}" alt="${name}">
+          <img src="${IMAGE_URL}${data.poster_path}" alt="${name}"></img>
         </div>
         <div class="modal-info">
           <div class="modal-title">
-            <img src="${IMAGE_URL}${logo}" alt="${name}">
+            ${logo || name}
             <p><strong>${data.genres.map(genre => genre.name).join(", ")}</strong></p>
           </div>
           <div>
@@ -178,11 +181,11 @@ function displayModal(mediaType, data) {
     details.innerHTML = `
       <div class="modal-media">
         <div class="modal-cover">
-          <img src="${IMAGE_URL}${data.poster_path}" alt="${data.name}">
+          <img src="${IMAGE_URL}${data.poster_path}" alt="${name}"></img>
         </div>
         <div class="modal-info">
           <div class="modal-title">
-            <img src="${IMAGE_URL}${logo}" alt="${data.name}">
+            ${logo || name}
             <p><strong> ${data.genres.map(genre => genre.name).join(", ")}</strong></p>
           </div>
           <p><strong></strong> ${data.overview}</p>

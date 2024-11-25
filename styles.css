@@ -327,8 +327,9 @@ option {
   .player-container {
     position: relative;
     margin-top: 2vh;
-    width: 86%;
+    width: 76%;
     aspect-ratio: 16 / 9;
+    box-shadow: 0 0 26px rgba(0, 0, 0, 0.76);
   }
   
   .loading {

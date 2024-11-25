@@ -20,7 +20,7 @@ function renderGridItems(items) {
         ? `${IMAGE_URL}${item.poster_path}`
         : 'https://via.placeholder.com/200x300?text=No+Image';
       return `
-        <div class="grid-item" data-id="${item.id}" data-media-type="${item.media_type || 'movie'}">
+        <div class="grid-item" data-id="${item.id}" data-media-type="${item.media_type}">
           <div class="grid-item-cover">
             <img src="${image}" alt="${title}">
           </div>
@@ -100,6 +100,13 @@ function displaySearchResults(results) {
         ${renderGridItems(results)}
       </div>
     </section>
+    <div id="info-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+          <div id="modal-details">
+          </div>
+      </div>
+    </div>
   `;
 }
 
@@ -123,7 +130,7 @@ async function fetchMetaData(mediaType, id) {
 }
 
 async function openModal(event) {
-  const gridItem = event.target.closest('.grid-item');
+  const gridItem = event.target.closest(".grid-item");
   if (gridItem) {
     const mediaType = gridItem.dataset.mediaType;
     const id = gridItem.dataset.id;

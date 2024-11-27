@@ -4,9 +4,9 @@ const IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 
 // Sections to populate
 const sections = {
-  'trending-movies': `${BASE_URL}/trending/movie/week?api_key=${API_KEY}&with_release_type=4,page=2`,
+  'trending-movies': `${BASE_URL}/trending/movie/week?api_key=${API_KEY}&with_release_type=4&page=1`,
   'trending-series': `${BASE_URL}/trending/tv/week?api_key=${API_KEY}`,
-  'netflix': `${BASE_URL}/discover/movie?api_key=${API_KEY}&networks=Netflix`,
+  'netflix': `${BASE_URL}/discover/tv?api_key=${API_KEY}&include_null_first_air_dates=false&language=en-US&page=1&sort_by=popularity.desc&with_networks=213`,
   'amazon-prime': `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_networks=1024`,
   'apple-tv': `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_networks=2552`
 };
@@ -21,7 +21,7 @@ function renderGridItems(items) {
         : 'https://via.placeholder.com/200x300?text=No+Image';
       return `
         <div class="grid-item" data-id="${item.id}" data-media-type="${item.media_type}">
-          <div class="grid-item-cover">
+          <div>
             <img src="${image}" alt="${title}">
           </div>
           <div class="grid-item-title">
@@ -141,6 +141,11 @@ async function openModal(event) {
   }
 }
 
+function convertDate(dateString) {
+  const options = { month: 'long', day: 'numeric', year: 'numeric' };
+  const formatter = new Intl.DateTimeFormat('en-US', options);
+  return formatter.format(new Date(dateString));
+}
 
 // Display modal with fetched data
 function displayModal(mediaType, data) {
@@ -149,6 +154,7 @@ function displayModal(mediaType, data) {
   const details = document.getElementById('modal-details');
   const id = data.id;
   const name = data.name || data.title || data.original_title;
+  const date = convertDate(  data.release_date || data.first_air_date || data.air_date);
   
   const logo = data.images?.logos?.[0]?.file_path
     ? `<img src="${IMAGE_URL}${data.images.logos[0].file_path}" alt="Logo">`
@@ -161,15 +167,11 @@ function displayModal(mediaType, data) {
           <img src="${IMAGE_URL}${data.poster_path}" alt="${name}"></img>
         </div>
         <div class="modal-info">
-          <div class="modal-title">
             ${logo || name}
             <p><strong>${data.genres.map(genre => genre.name).join(", ")}</strong></p>
-          </div>
-          <div>
             <p>${data.overview || 'No description available.'}</p>
-            <p><strong>Release Date:</strong> ${data.release_date || data.first_air_date}</p>
-          </div>
-          <button class="watch-btn" data-name="${name}" data-id="${id}">Watch</button>
+            <p>Release Date: ${date}</p>
+          <div><button class="watch-btn" data-name="${name}" data-id="${id}">Watch</button></div>
         </div>
       </div>
     `;
@@ -184,12 +186,10 @@ function displayModal(mediaType, data) {
           <img src="${IMAGE_URL}${data.poster_path}" alt="${name}"></img>
         </div>
         <div class="modal-info">
-          <div class="modal-title">
-            ${logo || name}
-            <p><strong> ${data.genres.map(genre => genre.name).join(", ")}</strong></p>
-          </div>
-          <p><strong></strong> ${data.overview}</p>
-          <p><strong>First Air Date:</strong> ${data.first_air_date}</p>
+          ${logo || name}
+          <p><strong> ${data.genres.map(genre => genre.name).join(", ")}</strong></p>
+          <p>${data.overview || 'No description available.'}</p>
+          <p>First Air Date: ${date}</p>
         </div>
       </div>
       <div class="season-info">
@@ -219,15 +219,14 @@ function displayModal(mediaType, data) {
         const seasonData = await response.json();
         episodeContainer.innerHTML = seasonData.episodes
           .map(episode => `
-            <div class="episode" 
-              data-name="${data.name}"
-              data-id="${data.id}"
-              data-season="${selectedSeason}" 
-              data-episode="${episode.episode_number}">
-              <img src="${episode.still_path ? IMAGE_URL + episode.still_path : 'https://via.placeholder.com/300x169?text=No+Image'}" alt="Episode ${episode.episode_number}">
-              <div class="episode-info">
-                <h4>${episode.episode_number}. ${episode.name}</h4>
-                <p><strong> ${episode.air_date}</strong></p>
+            <div class="episode" data-name="${data.name}" data-id="${data.id}" data-season="${selectedSeason}" data-episode="${episode.episode_number}">
+              <div class="episode-items">
+                <img src="${episode.still_path ? IMAGE_URL + episode.still_path : 'https://via.placeholder.com/300x169?text=No+Image'}" alt="Episode ${episode.episode_number}">
+                <div class="episode-info">
+                  <h3>${episode.episode_number}. ${episode.name}</h3>
+                  <p>Rated: ${episode.vote_average.toFixed(1)}</p>
+                  <p>${convertDate(episode.air_date)}</p>
+                </div>
                 <p>${episode.overview || "No overview available"}</p>
               </div>
             </div>
@@ -325,4 +324,4 @@ document.querySelector('.close-btn').addEventListener('click', () => {
 });
 
 // Attach event listener for modal
-document.body.addEventListener('click', openModal);
+document.addEventListener('click', openModal);

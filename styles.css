@@ -1,5 +1,10 @@
-body {
+* {
+    box-sizing: border-box;
     margin: 0;
+    padding: 0;
+  }
+
+body {
     background-color: #141427;
     color: white;
 }
@@ -75,7 +80,7 @@ nav ul li a:hover {
 
 /* Sections */
 main {
-    padding: 0 2rem;
+    padding: 1rem 2rem;
 }
 
 section {
@@ -89,41 +94,56 @@ section h2 {
 }
 
 /* Grid Layout */
+
 .grid-container {
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1;
+    gap: 2vw;
+    justify-content: center;
+}
+
+/* .grid-container {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 2vw;
-}
+    border: 2px solid red;
+} */
+
 .grid-item {
-    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
+    width: 14%;
+    aspect-ratio: 1 / 1.495;
     text-align: center;
+    border-radius: 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s, box-shadow 0.3s;
-    border: 0.1rem solid white;
 }
 
 .grid-item:hover {
     transform: scale(1.05);
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7);
-    border: 0.2rem solid #e63e3e;
 }
 
-.grid-item-cover {
-    width: 100%;
-}
 
 .grid-item img {
+    object-fit: fill;
     width: 100%;
-    
 }
 
 .grid-item-title {
+    z-index: 1000;
+    position: relative;
+    top: -16%;
     margin: 0rem;
+    background-image: linear-gradient(180deg, #00000000 0%, #000000ab 50%, #000000 100%);
 }
 
 .grid-item h3 {
     font-size: 1.2vw;
+    padding: 0.8rem 0;
 }
 
 .show-more, .collapse {
@@ -150,65 +170,23 @@ section h2 {
     top: 0;
     width: 100vw;
     height: 100vh;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    transition: backdrop-filter 0.3s ease;
+    background-color: rgba(20, 20, 39, 0.37); /* Semi-transparent background */
 }
-  
+
 .modal-content {
-    margin: 10vh auto;
-    padding: 2rem;
-    background-color: #141427;
-    border: 1px solid #ccc;
+    position: relative;
     width: 74%;
     height: 74%;
-    border-radius: 8px;
-    position: relative;
+    padding: 2rem;
+    margin: 10vh auto;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #141427;
 }
 
-#modal-details {
-    display: block;
-    gap: 4vw;
-    overflow: scroll;
-    height: 100%;
-}
-
-.modal-media {
-    display: flex;
-    flex-direction: row;
-    gap: 4vw;
-}
-  
-.modal-cover {
-    align-items: flex-start;
-    width: 24%;
-    height: 70%;
-}
-
-.modal-cover img {
-    width: 100%;
-}
-
-.modal-info {
-    margin-left: auto;
-    align-content: end;
-    width: 64%;
-    padding: 1rem 2rem;
-}
-
-.modal-title {
-    padding-bottom: 1rem;
-}
-
-.modal-title img {
-    width: 40%;
-    padding: 1rem 0;
-}
-
-.modal-title p {
-    margin: 0;
-    padding: 0;
-}
-  
 .close-btn {
     position: absolute;
     top: 10px;
@@ -217,8 +195,67 @@ section h2 {
     cursor: pointer;
 }
 
-.modal.visible {
+#modal-details {
+    display: block;
+    gap: 4vw;
+    overflow: scroll;
+    height: 100%;
+    border-radius: 5px;
+}
+
+
+.modal-media {
+    height: 80%;
     display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.modal-cover {
+    height: 100%;
+    aspect-ratio: 1 / 1.5;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+
+}
+
+.modal-cover img {
+    width: 100%;
+    border-radius: 5px;
+}
+
+.modal-info{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-end;
+    justify-content: space-between;
+    gap: 0.8rem;
+    width: 100%;
+}
+
+.modal-info img {
+    max-width: 60%;
+    margin: 2rem 0;
+}
+
+.modal-info p {
+    width: 100%;
+    padding-right: 20%;
+    height:fit-content;
+}
+
+.watch-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 1.2rem;
+    background-color: #4a4a69;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.watch-btn:hover {
+    transition: background-color 1s ease;
+    background-color: #383852;
 }
 
 /*.season-info {
@@ -244,10 +281,11 @@ section h2 {
 select {
     background-color:#30303d ;
     color: white;
-    padding: 0.5rem;
     border: 0px;
-    border-radius: 2px;
     font-size: 18px;
+    padding: 0.8rem;
+    border-radius: 5px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
 }
 option {
     padding: 5px;
@@ -257,59 +295,62 @@ option {
 .episode-container {
     display: flex;
     flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+    margin: 0 auto;
+}
+
+.episode-container::after {
+    content: "";
+    min-width: calc((100% - 1rem) / 2);
+}
+
+
+.episode {
+    min-width: 40%;
+    flex: 1;
+    background-color: #30303d;
+    padding: 1rem;
+    border-radius: 5px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+}
+
+
+.episode-items {
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1;
     justify-content: space-between;
     gap: 1rem;
 }
 
-.episode {
-    display: flex;
-    flex-basis: 46%;
-    align-items: flex-start;
-    background-color: #30303d;
-    justify-content: space-between;
-    padding: 1rem;
-    border-radius: 5px;
-    text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-}
-
-.episode-info {
-    display: block;
-    justify-content: space-between;
-    padding-left: 2rem;
-}
-
-.episode img {
-    width: 36%;
+.episode-items img {
+    flex: none;
+    width: 45%;
+    min-height: 100%;
+    aspect-ratio: 16 /9;
     object-fit: cover;
     border-radius: 5px;
-    flex-shrink: 0;
     cursor: pointer;
-    transition: transform 0.2s;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
 }
 
-.episode h4, .episode p {
-    font-size: 1rem;
+
+.episode-info {
+    flex: inherit;
+    align-content: center;
+}
+
+.episode-info h3, .episode-info p {
     text-align: left;
-    margin: 0;
-    padding-bottom: 0.4rem;
-
+    margin: 0.2rem 0;
 }
 
-.watch-btn {
-    margin: 1rem auto;
-    padding: 0.6rem 1.2rem;
-    font-size: 1.2rem;
-    background-color: #ff4747;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+.episode-items p:nth-child(3) {
+    width: 100%;
 }
-  
-.watch-btn:hover, .watch-btn:hover {
-    background-color: #e63e3e;
-}
+
 
 /* player */
 

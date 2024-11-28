@@ -1,31 +1,68 @@
 const API_KEY = '213d830aae3a2f7b67e37f157405a42e';
 const BASE_URL = 'https://api.tmdb.org/3';
 const IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
+const OPTIONS = 'include_null_first_air_dates=false&language=en-US&page=1&sort_by=popularity.desc';
 
 // Sections to populate
 const sections = {
   'trending-movies': `${BASE_URL}/trending/movie/week?api_key=${API_KEY}&with_release_type=4&page=1`,
   'trending-series': `${BASE_URL}/trending/tv/week?api_key=${API_KEY}`,
-  'netflix': `${BASE_URL}/discover/tv?api_key=${API_KEY}&include_null_first_air_dates=false&language=en-US&page=1&sort_by=popularity.desc&with_networks=213`,
-  'amazon-prime': `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_networks=1024`,
-  'apple-tv': `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_networks=2552`
+  'netflix': `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_networks=213&${OPTIONS}`,
+  'amazon-prime': `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_networks=1024&${OPTIONS}`,
+  'apple-tv': `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_networks=2552&${OPTIONS}`
 };
 
+function sectionMediaType(sectionId) {
+  const url = sections[sectionId];
+  if (!url) return null;
+
+  return url.includes("/tv") ? "tv" : "movie";
+}
+
+// rounding fix
+function truncate(num, precision) {
+  return Math.floor(num * Math.pow(10, precision)) / Math.pow(10, precision);
+}
+
+function extractYear(dateString) {
+  const date = new Date(dateString);
+  return date.getFullYear();
+}
+
+function capString(str, containerWidth) {
+  const lines = str.split('\n'); // split the string into lines
+  const wrappedLines = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (wrappedLines.join('\n').length + line.length + 3 > containerWidth) { // 3 is for the ellipsis
+      wrappedLines.push(line.substring(0, containerWidth - 3) + '..');
+      break;
+    }
+    wrappedLines.push(line);
+  }
+
+  return wrappedLines.join('\n');
+}
 // Function to render grid items
 function renderGridItems(items) {
   return items
     .map(item => {
       const title = item.title || item.name;
+      const rating = truncate(item.vote_average, 1);
+      const year = extractYear(item.release_date || item.first_air_date);
       const image = item.poster_path
         ? `${IMAGE_URL}${item.poster_path}`
-        : 'https://via.placeholder.com/200x300?text=No+Image';
+        : 'https://placehold.co/440x661/383852/ccc?text=No+Image';
       return `
-        <div class="grid-item" data-id="${item.id}" data-media-type="${item.media_type}">
+        <div class="grid-item popout" data-id="${item.id}" data-media-type="${item.media_type}">
           <div>
             <img src="${image}" alt="${title}">
           </div>
-          <div class="grid-item-title">
-            <h3>${title}</h3>
+          <div class="grid-item-info">
+            <h4>${capString(title, 44)}</h4>
+            <h4>${rating}</h4>
+            <p>${year}</p>
           </div>
         </div>
       `;
@@ -34,7 +71,7 @@ function renderGridItems(items) {
 }
 
 // Fetch and display data with a customizable limit
-async function fetchContent(sectionId, url, limit = 12) {
+async function fetchContent(sectionId, url, limit = 14) {
   try {
     const response = await fetch(url);
     const data = await response.json();
@@ -130,15 +167,21 @@ async function fetchMetaData(mediaType, id) {
 }
 
 async function openModal(event) {
-  const gridItem = event.target.closest(".grid-item");
-  if (gridItem) {
-    const mediaType = gridItem.dataset.mediaType;
-    const id = gridItem.dataset.id;
+  const gridItem = event.target.closest('.grid-item'); // Identify the clicked item
+  if (!gridItem) return;
 
-  fetchMetaData(mediaType, id).then(({mediaType, data}) => {
-      displayModal(mediaType, data);
-  });
+  const id = gridItem.dataset.id; // Get the ID of the item
+  const sectionId = gridItem.closest('section')?.id; // Find the parent section's ID
+  const mediaType = sectionId ? sectionMediaType(sectionId) : null;
+
+  if (!mediaType || !id) {
+    console.error("Media type or ID not found");
+    return;
   }
+
+  fetchMetaData(mediaType, id).then(({ mediaType, data }) => {
+    displayModal(mediaType, data);
+  });
 }
 
 function convertDate(dateString) {
@@ -154,12 +197,13 @@ function displayModal(mediaType, data) {
   const details = document.getElementById('modal-details');
   const id = data.id;
   const name = data.name || data.title || data.original_title;
-  const date = convertDate(  data.release_date || data.first_air_date || data.air_date);
-  
+  const date = convertDate(  data.release_date || data.first_air_date || data.air_date);  
   const logo = data.images?.logos?.[0]?.file_path
     ? `<img src="${IMAGE_URL}${data.images.logos[0].file_path}" alt="Logo">`
     : `<h1>${name}</h1>`;
-  
+  //window.history.pushState({}, '', `/${mediaType}/${name}`);
+
+
   if (mediaType === "movie") {
     details.innerHTML = `
       <div class="modal-media">
@@ -221,7 +265,7 @@ function displayModal(mediaType, data) {
           .map(episode => `
             <div class="episode" data-name="${data.name}" data-id="${data.id}" data-season="${selectedSeason}" data-episode="${episode.episode_number}">
               <div class="episode-items">
-                <img src="${episode.still_path ? IMAGE_URL + episode.still_path : 'https://via.placeholder.com/300x169?text=No+Image'}" alt="Episode ${episode.episode_number}">
+                <img src="${episode.still_path ? IMAGE_URL + episode.still_path : 'https://placehold.co/500x281?text=No+Image+Available'}" alt="Episode ${episode.episode_number}">
                 <div class="episode-info">
                   <h3>${episode.episode_number}. ${episode.name}</h3>
                   <p>Rated: ${episode.vote_average.toFixed(1)}</p>
@@ -247,7 +291,7 @@ document.addEventListener("click", (event) => {
   if (event.target.classList.contains("watch-btn")) {
     const id = event.target.dataset.id; // Get the movie ID
     const name = event.target.dataset.name;
-    loadWatchPage("movie", name, id);
+    window.location.href = `watch.html?mediaType=movie&id=${id}&name=${name}`;
   }
 
   // Handle Episode Image Click (TV)
@@ -257,13 +301,25 @@ document.addEventListener("click", (event) => {
     const id = episodeElement.dataset.id;
     const season = episodeElement.dataset.season;
     const episode = episodeElement.dataset.episode;
-    loadWatchPage("tv", name, id, season, episode);
+    window.location.href = `watch.html?mediaType=tv&id=${id}&season=${season}&episode=${episode}&name=${name}`;
   }
 });
 
-function loadWatchPage(mediaType, name, id, season, episode) {
-  let iframeSrc;
+document.addEventListener("DOMContentLoaded", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const mediaType = urlParams.get('mediaType'); // movie or tv
+  const id = urlParams.get('id');
+  const name = urlParams.get('name')
+  const season = urlParams.get('season');
+  const episode = urlParams.get('episode');
 
+  if (mediaType && id) {
+    loadWatchPage(mediaType, name, id, season, episode);
+  }
+});
+
+function loadWatchPage(mediaType, name = null, id, season = null, episode = null) {
+  let iframeSrc;
   if (mediaType === "movie") {
     info = `${name}`;
     iframeSrc = `https://vidlink.pro/movie/${id}`;
@@ -272,8 +328,7 @@ function loadWatchPage(mediaType, name, id, season, episode) {
     iframeSrc = `https://vidlink.pro/tv/${id}/${season}/${episode}`;
   }
 
-  // Create the embed page
-  const watchPage = `
+    const watchPage = `
     <div class="watch-page">
     <div class="player-container">
         <!-- Placeholder until iframe loads -->
@@ -289,19 +344,13 @@ function loadWatchPage(mediaType, name, id, season, episode) {
     <h1>${info}</h1>
     </div>
   `;
-
-  // Replace main content with the watch page
-  const mainContent = document.querySelector("main");
-  mainContent.innerHTML = watchPage;
+  document.querySelector("main").innerHTML = watchPage;
+  window.history.pushState({}, '', `/watch/${id}${season && episode ? `/${season}/${episode}` : ''}`);
 }
 
-
-function showIframe(iframe) {
-  iframe.style.display = "block";
-  document.querySelector(".loading").style.display = "none";
+function goBack() {
+  window.history.back();
 }
-
-
 
 function showIframe(iframe) {
   // Hide the loading div and show the iframe
@@ -321,6 +370,8 @@ window.addEventListener("popstate", (event) => {
 // Close modal on click
 document.querySelector('.close-btn').addEventListener('click', () => {
   document.getElementById('info-modal').style.display = 'none';
+  window.history.pushState({}, '', `/`);
+  //window.history.back();
 });
 
 // Attach event listener for modal

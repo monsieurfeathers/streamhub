@@ -99,7 +99,7 @@ section h2 {
     display: flex;
     flex-wrap: wrap;
     flex: 1;
-    gap: 2vw;
+    gap: 1vw;
     justify-content: center;
 }
 
@@ -113,37 +113,52 @@ section h2 {
 .grid-item {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    width: 14%;
-    aspect-ratio: 1 / 1.495;
+    width: 14vw;
+    height: 24vw ;
+    aspect-ratio: 1 / 1.695;
     text-align: center;
-    border-radius: 5px;
+    border-radius: 10px;
+    transition: padding 0.5s, box-shadow 0.3s ease-in;
+    padding: 0.7rem;
+    border: 2px solid #99999660;
+    /* transform: scale(0.90); */
+    transition: transform 0.3s, box-shadow 0.3s, border 0.3s;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s, box-shadow 0.3s;
+    /* box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7); */
 }
+
 
 .grid-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7);
+    transform: scale(1.03);
+    box-shadow: 0 10px 24px rgb(8, 8, 22);
+    border: 2px solid #9999d6c4;
 }
 
-
 .grid-item img {
+    border-radius: 10px;
+    aspect-ratio: 1 / 1.50227;
     object-fit: fill;
     width: 100%;
 }
 
-.grid-item-title {
-    z-index: 1000;
-    position: relative;
-    top: -16%;
-    margin: 0rem;
-    background-image: linear-gradient(180deg, #00000000 0%, #000000ab 50%, #000000 100%);
+.grid-item-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    height: 17%;
+    text-align: left;
+    margin: auto 0;
 }
 
-.grid-item h3 {
-    font-size: 1.2vw;
-    padding: 0.8rem 0;
+.grid-item-info h4 {
+    font-size: 0.96vw;
+    max-width: 85%;
+}
+
+.grid-item-info p {
+    font-size: 0.88vw;
+    width: 100%;
+    margin-top: auto;
 }
 
 .show-more, .collapse {
@@ -178,8 +193,8 @@ section h2 {
 
 .modal-content {
     position: relative;
-    width: 74%;
-    height: 74%;
+    width: 68%;
+    height: 80%;
     padding: 2rem;
     margin: 10vh auto;
     border-radius: 5px;
@@ -233,8 +248,13 @@ section h2 {
 }
 
 .modal-info img {
-    max-width: 60%;
-    margin: 2rem 0;
+    flex: none;
+    max-width: 55%;
+    max-height: 35%;
+    margin: 5% 0;
+    align-self: flex-start;
+    object-fit: contain;
+
 }
 
 .modal-info p {

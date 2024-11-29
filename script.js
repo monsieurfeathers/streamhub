@@ -3,14 +3,22 @@ const BASE_URL = 'https://api.tmdb.org/3';
 const IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 const OPTIONS = 'include_null_first_air_dates=false&language=en-US&page=1&sort_by=popularity.desc';
 
+//${https://api.tmdb.org/3}/discover/${mediaType}?api_key=${API_KEY}&with_networks=${networkId}&with_watch_providers=${providerId}&${OPTIONS}
+
 // Sections to populate
 const sections = {
   'trending-movies': `${BASE_URL}/trending/movie/week?api_key=${API_KEY}&with_release_type=4&page=1`,
   'trending-series': `${BASE_URL}/trending/tv/week?api_key=${API_KEY}`,
-  'netflix': `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_networks=213&${OPTIONS}`,
+  /* 'netflix': `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_networks=213&${OPTIONS}`,
   'amazon-prime': `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_networks=1024&${OPTIONS}`,
-  'apple-tv': `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_networks=2552&${OPTIONS}`
+  'apple-tv': `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_networks=2552&${OPTIONS}` */
 };
+
+function loadDiscoverContent(networkId = 213, providerId = 8, mediaType = 'movie') {
+  const url = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&with_networks=${networkId}&with_watch_providers=${providerId}&watch_region=US&${OPTIONS}`;
+  const sectionId = 'discover-streaming';
+  fetchContent(sectionId, url, limit = 12)
+}
 
 function sectionMediaType(sectionId) {
   const url = sections[sectionId];
@@ -19,7 +27,29 @@ function sectionMediaType(sectionId) {
   return url.includes("/tv") ? "tv" : "movie";
 }
 
-// rounding fix
+document.querySelectorAll(".tab-menu .tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelector(".tab-menu .active").classList.remove("active");
+    tab.classList.add("active");
+    
+    const networkId = tab.dataset.network;
+    const providerId = tab.dataset.provider;
+    const mediaType = document.querySelector(".media-switch input:checked").value;
+    loadDiscoverContent(networkId, providerId, mediaType);
+  });
+});
+
+document.querySelectorAll(".media-switch input").forEach(input => {
+  input.addEventListener("change", () => {
+    const mediaType = input.value;
+    const networkId = document.querySelector(".tab-menu .active").dataset.network;
+    loadDiscoverContent(networkId, mediaType);
+  });
+});
+
+
+//
+// Misc. functions 
 function truncate(num, precision) {
   return Math.floor(num * Math.pow(10, precision)) / Math.pow(10, precision);
 }
@@ -44,6 +74,7 @@ function capString(str, containerWidth) {
 
   return wrappedLines.join('\n');
 }
+//
 // Function to render grid items
 function renderGridItems(items) {
   return items
@@ -109,6 +140,10 @@ function collapseSection(sectionId) {
   document.querySelector(`#${sectionId} .show-more`).style.display = 'block';
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  loadDiscoverContent(213, 8, 'movie'); // Netflix and Movies as default
+});
+
 // Handle Search
 async function handleSearch() {
   const query = document.getElementById('search-input').value.trim();
@@ -173,7 +208,7 @@ async function openModal(event) {
   const id = gridItem.dataset.id; // Get the ID of the item
   const sectionId = gridItem.closest('section')?.id; // Find the parent section's ID
   const mediaType = sectionId ? sectionMediaType(sectionId) : null;
-
+  //console.error(id, sectionId, mediaType);
   if (!mediaType || !id) {
     console.error("Media type or ID not found");
     return;
@@ -320,6 +355,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadWatchPage(mediaType, name, id, season, episode);
   }
 });
+
 
 function loadWatchPage(mediaType, name = null, id, season = null, episode = null) {
   let iframeSrc;

@@ -178,6 +178,42 @@ section h2 {
     background-color: #e63e3e;
 }
 
+#discover-streaming {
+    margin: 2rem 0;
+    text-align: center;
+}
+  
+.tab-menu {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+}
+  
+.tab {
+    background-color: #333;
+    color: white;
+    padding: 0.5rem 1rem;
+    margin: 0 0.5rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+  
+.tab.active {
+    background-color: #ff4747;
+}
+  
+.media-switch {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+}
+  
+.media-switch label {
+    margin: 0 1rem;
+    cursor: pointer;
+}
+
 .modal {
     display: none; /* Hidden by default */
     position: fixed;

@@ -21,9 +21,11 @@ function loadDiscoverContent(networkId = 213, providerId = 8, mediaType = 'movie
 }
 
 function sectionMediaType(sectionId) {
+  if (sectionId === "discover-streaming") {
+    return document.querySelector(".media-switch input:checked").value; // Returns either 'movie' or 'tv'
+  }
   const url = sections[sectionId];
   if (!url) return null;
-
   return url.includes("/tv") ? "tv" : "movie";
 }
 

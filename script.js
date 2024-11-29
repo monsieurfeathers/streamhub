@@ -71,7 +71,7 @@ function renderGridItems(items) {
 }
 
 // Fetch and display data with a customizable limit
-async function fetchContent(sectionId, url, limit = 14) {
+async function fetchContent(sectionId, url, limit = 12) {
   try {
     const response = await fetch(url);
     const data = await response.json();
@@ -153,9 +153,9 @@ async function fetchMetaData(mediaType, id) {
     let url;
 
     if (mediaType === "movie") {
-      url = `${BASE_URL}/movie/${id}?api_key=${API_KEY}&language=en-US&append_to_response=images&include_image_language=en`;
+      url = `${BASE_URL}/movie/${id}?api_key=${API_KEY}&language=en-US&append_to_response=videos,credits,images&include_image_language=en`;
     } else if (mediaType === "tv") {
-      url = `${BASE_URL}/tv/${id}?api_key=${API_KEY}&language=en-US&append_to_response=images&include_image_language=en`;
+      url = `${BASE_URL}/tv/${id}?api_key=${API_KEY}&language=en-US&append_to_response=credits,images&include_image_language=en`;
       }
       const response = await fetch(url);
       const data = await response.json();
@@ -197,6 +197,7 @@ function displayModal(mediaType, data) {
   const details = document.getElementById('modal-details');
   const id = data.id;
   const name = data.name || data.title || data.original_title;
+  const cast = data.credits.cast.map(cast => cast.name).slice(0, 7).join(", ");
   const date = convertDate(  data.release_date || data.first_air_date || data.air_date);  
   const logo = data.images?.logos?.[0]?.file_path
     ? `<img src="${IMAGE_URL}${data.images.logos[0].file_path}" alt="Logo">`
@@ -214,7 +215,8 @@ function displayModal(mediaType, data) {
             ${logo || name}
             <p><strong>${data.genres.map(genre => genre.name).join(", ")}</strong></p>
             <p>${data.overview || 'No description available.'}</p>
-            <p>Release Date: ${date}</p>
+            <p><strong>Cast : ${cast}</strong></p>
+            <p><strong>Release On : ${date}</strong></p>
           <div><button class="watch-btn" data-name="${name}" data-id="${id}">Watch</button></div>
         </div>
       </div>
@@ -233,6 +235,7 @@ function displayModal(mediaType, data) {
           ${logo || name}
           <p><strong> ${data.genres.map(genre => genre.name).join(", ")}</strong></p>
           <p>${data.overview || 'No description available.'}</p>
+          <p><strong>Cast : ${cast}</strong></p>
           <p>First Air Date: ${date}</p>
         </div>
       </div>
@@ -291,7 +294,7 @@ document.addEventListener("click", (event) => {
   if (event.target.classList.contains("watch-btn")) {
     const id = event.target.dataset.id; // Get the movie ID
     const name = event.target.dataset.name;
-    window.location.href = `watch.html?mediaType=movie&id=${id}&name=${name}`;
+    window.location.href = `watch.html?type=movie&id=${id}&name=${name}`;
   }
 
   // Handle Episode Image Click (TV)
@@ -301,17 +304,17 @@ document.addEventListener("click", (event) => {
     const id = episodeElement.dataset.id;
     const season = episodeElement.dataset.season;
     const episode = episodeElement.dataset.episode;
-    window.location.href = `watch.html?mediaType=tv&id=${id}&season=${season}&episode=${episode}&name=${name}`;
+    window.location.href = `watch.html?type=tv&id=${id}&s=${season}&e=${episode}&name=${name}`;
   }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
   const urlParams = new URLSearchParams(window.location.search);
-  const mediaType = urlParams.get('mediaType'); // movie or tv
+  const mediaType = urlParams.get('type'); // movie or tv
   const id = urlParams.get('id');
   const name = urlParams.get('name')
-  const season = urlParams.get('season');
-  const episode = urlParams.get('episode');
+  const season = urlParams.get('s');
+  const episode = urlParams.get('e');
 
   if (mediaType && id) {
     loadWatchPage(mediaType, name, id, season, episode);
@@ -324,8 +327,8 @@ function loadWatchPage(mediaType, name = null, id, season = null, episode = null
     info = `${name}`;
     iframeSrc = `https://vidlink.pro/movie/${id}`;
   } else if (mediaType === "tv") {
-    info = `${name}:S${season}E${episode}`;
-    iframeSrc = `https://vidlink.pro/tv/${id}/${season}/${episode}`;
+    info = `${name}: S${season}E${episode}`;
+    iframeSrc = `https://vidlink.pro/tv/${id}/${season}/${episode}`; ///*https://www.2embed.skin/embedtv/${id}&s=${season}&e=${episode}*/
   }
 
     const watchPage = `
@@ -336,12 +339,13 @@ function loadWatchPage(mediaType, name = null, id, season = null, episode = null
         <iframe
           src="${iframeSrc}"
           frameborder="0"
+          scrolling="no"
           allowfullscreen
           style="display: none;"
           onload="showIframe(this)"
         ></iframe>
+        <h2>${info}</h2>
       </div>
-    <h1>${info}</h1>
     </div>
   `;
   document.querySelector("main").innerHTML = watchPage;

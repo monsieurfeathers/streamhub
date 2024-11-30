@@ -3,15 +3,10 @@ const BASE_URL = 'https://api.tmdb.org/3';
 const IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 const OPTIONS = 'include_null_first_air_dates=false&language=en-US&page=1&sort_by=popularity.desc';
 
-//${https://api.tmdb.org/3}/discover/${mediaType}?api_key=${API_KEY}&with_networks=${networkId}&with_watch_providers=${providerId}&${OPTIONS}
-
 // Sections to populate
 const sections = {
   'trending-movies': `${BASE_URL}/trending/movie/week?api_key=${API_KEY}&with_release_type=4&page=1`,
   'trending-series': `${BASE_URL}/trending/tv/week?api_key=${API_KEY}`,
-  /* 'netflix': `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_networks=213&${OPTIONS}`,
-  'amazon-prime': `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_networks=1024&${OPTIONS}`,
-  'apple-tv': `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_networks=2552&${OPTIONS}` */
 };
 
 function loadDiscoverContent(networkId = 213, providerId = 8, mediaType = 'movie') {
@@ -104,8 +99,8 @@ function renderGridItems(items) {
             <img src="${image}" alt="${title}">
           </div>
           <div class="grid-item-info">
-            <h4>${capString(title, 30)}</h4>
-            <h4>${rating}</h4>
+            <p>${capString(title, 30)}</p>
+            <p>${rating}</p>
             <p>${year}</p>
           </div>
         </div>
@@ -245,7 +240,7 @@ function displayModal(mediaType, data) {
   const details = document.getElementById('modal-details');
   const id = data.id;
   const name = data.name || data.title || data.original_title;
-  const cast = data.credits.cast.map(cast => cast.name).slice(0, 7).join(", ");
+  const cast = data.credits.cast.map(cast => cast.name).slice(0, 5).join(", ");
   const date = convertDate(  data.release_date || data.first_air_date || data.air_date);  
   const logo = data.images?.logos?.[0]?.file_path
     ? `<img src="${IMAGE_URL}${data.images.logos[0].file_path}" alt="Logo">`
@@ -376,7 +371,7 @@ function loadWatchPage(mediaType, name = null, id, season = null, episode = null
     info = `${name}`;
     iframeSrc = `https://vidlink.pro/movie/${id}`;
   } else if (mediaType === "tv") {
-    info = `${name}: S${season}E${episode}`;
+    info = `S${season}:E${episode} ${name}`;
     iframeSrc = `https://vidlink.pro/tv/${id}/${season}/${episode}`; ///*https://www.2embed.skin/embedtv/${id}&s=${season}&e=${episode}*/
   }
 
@@ -396,8 +391,16 @@ function loadWatchPage(mediaType, name = null, id, season = null, episode = null
         <h2>${info}</h2>
       </div>
     </div>
-  `;
+    `;
+
+    const pageHead = `
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${info}</title>
+    <link rel="stylesheet" href="styles.css">
+    `;
   document.querySelector("main").innerHTML = watchPage;
+  document.querySelector("head").innerHTML = pageHead;
   window.history.pushState({}, '', `/watch/${id}${season && episode ? `/${season}/${episode}` : ''}`);
 }
 

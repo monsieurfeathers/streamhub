@@ -100,7 +100,7 @@ section h2 {
     display: flex;
     flex-wrap: wrap;
     flex: 1;
-    gap: 1vw;
+    gap: 1.2vw;
     justify-content: center;
 }
 
@@ -114,27 +114,26 @@ section h2 {
 .grid-item {
     display: flex;
     flex-direction: column;
-    width: 14vw;
-    height: 24vw ;
+    width: 13vw;
+    height: 22vw ;
     aspect-ratio: 1 / 1.695;
     text-align: center;
     border-radius: 10px;
     transition: padding 0.5s, box-shadow 0.3s ease-in;
     padding: 0.7rem;
-    border: 2px solid #99999660;
-    /* transform: scale(0.90); */
+    border: 1px solid #383852a6;
     transition: transform 0.3s, box-shadow 0.3s, border 0.3s;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     /* box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7); */
 }
 
-/* 
+
 .grid-item:hover {
     transform: scale(1.03);
     box-shadow: 0 10px 24px rgb(8, 8, 22);
-    border: 2px solid #9999d6c4;
+    border: 1px solid #383852e5;
 }
- */
+
 .grid-item img {
     border-radius: 10px;
     aspect-ratio: 1 / 1.50227;
@@ -151,12 +150,12 @@ section h2 {
     margin: auto 0;
 }
 
-.grid-item-info h4 {
+.grid-item-info p {
     font-size: 0.96vw;
     max-width: 85%;
 }
 
-.grid-item-info p {
+.grid-item-info p:nth-last-child(1) {
     font-size: 0.88vw;
     width: 100%;
     margin-top: auto;
@@ -179,7 +178,7 @@ section h2 {
 }
 
 #discover-streaming {
-    margin: 2rem 0;
+    margin: 1.2rem 0;
     text-align: center;
 }
 
@@ -188,58 +187,61 @@ section h2 {
     display: flex;
     justify-content: flex-start;
     flex-direction: row;
-    padding-left: 2rem;
-    margin: 0 1rem;
+    padding-left: 1.7rem;
+    margin: 0 4rem;
 }
   
 .tab {
-    background-color: #141427;
+    background-color: transparent;
     color: #888;
     padding: 10px 20px;
-    border: 0px solid #aaa;
+    border: 1px solid transparent;
     border-bottom: none;
+    border-radius: 8px 8px 0 0;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
     transition: background-color 0.3s, color 0.3s, border-radius 0.3s;
 }
   
 .tab.active {
-    background-color: #30303d;
     color: white;
-    font-weight: bold;
-    border: 1px solid white;
+    border: 1px solid #383852a6;
     border-bottom: none;
-    border-radius: 5px 5px 0 0;
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
 }
   
 .tab:hover {
     color: white;
     background-color: #4a4a69;
-    border-radius: 5px 5px 0 0;
+    border: 1px solid #383852c4;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
 }
 
 .tab-items {
-    border: 2px solid white;
+    border: 1px solid #3838528c;
     border-radius: 10px;
     padding: 1rem;
-    margin: 0 2rem;
+    margin: 0 4.5rem;
 }
 
 .media-switch {
     display: flex;
     justify-content: flex-start;
     margin-bottom: 1rem;
-    width: 20vh;
+    width: 12%;
+    text-wrap: nowrap ;
     border-radius: 6px;
     overflow: hidden;
-    outline: 2px solid #aaa;
+    outline: 1px solid #3838528c;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .media-tab {
     min-width: 50%;
     padding: 10px 5px;
-    background-color: #141427;
+    background-color: transparent;
     color: #aaa;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
@@ -247,10 +249,9 @@ section h2 {
 }
 
 .media-tab.active {
-    background-color: #30303d;
+    background-color: #3838528c;
     color: white;
     border: none;
-    font-weight: bold;
 }
 
 .media-tab:hover {
@@ -274,9 +275,9 @@ input[type="radio"] + label:before {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(5px);
     transition: backdrop-filter 0.3s ease;
-    background-color: rgba(20, 20, 39, 0.37); /* Semi-transparent background */
+    background-color: rgba(20, 20, 39, 0.521); /* Semi-transparent background */
 }
 
 .modal-content {
@@ -285,9 +286,11 @@ input[type="radio"] + label:before {
     height: 80%;
     padding: 2rem;
     margin: 10vh auto;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    border-radius: 10px;
+    border: 1px solid #3838526b;
     background-color: #141427;
+    backdrop-filter: blur(80px);
+    background-color: rgba(20, 20, 39, 0.801);
 }
 
 .close-btn {
@@ -341,18 +344,18 @@ input[type="radio"] + label:before {
     max-height: 40%;
     align-self: flex-start;
     object-fit: contain;
-
 }
 
 .modal-info p {
     width: 100%;
-    padding-right: 20%;
+    padding-right: 5%;
     height:fit-content;
+    font-size: 14px;
 }
 
 .watch-btn {
     padding: 0.6rem 1.2rem;
-    font-size: 1.2rem;
+    font-size: 16px;
     background-color: #4a4a69;
     color: white;
     border: none;
@@ -389,8 +392,8 @@ select {
     background-color:#30303d ;
     color: white;
     border: 0px;
-    font-size: 18px;
-    padding: 0.8rem;
+    font-size: 16px;
+    padding: 0.6rem;
     border-radius: 5px;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
 }
@@ -417,9 +420,10 @@ option {
 .episode {
     min-width: 40%;
     flex: 1;
-    background-color: #30303d;
+    background-color: #30303d77;
     padding: 1rem;
     border-radius: 5px;
+    border: 1px solid #38385285;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
 }
 
@@ -450,11 +454,13 @@ option {
 }
 
 .episode-info h3, .episode-info p {
+    font-size: 14px;
     text-align: left;
     margin: 0.2rem 0;
 }
 
 .episode-items p:nth-child(3) {
+    font-size: 14px;
     width: 100%;
 }
 

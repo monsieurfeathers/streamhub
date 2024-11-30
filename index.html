@@ -41,35 +41,20 @@
         <section id="discover-streaming">
             <h2>Discover what's streaming</h2>
             <div class="tab-menu">
-              <button class="tab active" data-network="213" data-provider="8">Netflix</button>
-              <button class="tab" data-network="1024" data-provider="2100">Amazon Prime</button>
-              <button class="tab" data-network="2552" data-provider="350">Apple TV+</button>
+                <button class="tab active" data-network="213" data-provider="8">Netflix</button>
+                <button class="tab" data-network="1024" data-provider="2100">Amazon Prime</button>
+                <button class="tab" data-network="2552" data-provider="350">Apple TV+</button>
+                <button class="tab" data-network="" data-provider="1899">HBO Max</button>
+                <button class="tab" data-network="" data-provider="531">Paramount+</button>
             </div>
-            <div class="media-switch">
-              <label>
-                <input type="radio" name="media-type" value="movie" checked> Movies
-              </label>
-              <label>
-                <input type="radio" name="media-type" value="tv"> TV Shows
-              </label>
+            <div class="tab-items">
+                <div class="media-switch">
+                    <button class="media-tab active"  data-type="movie">Movies</button>
+                    <button class="media-tab"  data-type="tv">TV Shows</button>
+                </div>
+                <div class="grid-container"></div>
             </div>
-            <div class="grid-container"></div>
         </section>
-          
-
-
-        <!-- <section id="netflix">
-            <h2>Netflix</h2>
-            <div class="grid-container"></div>
-        </section>
-        <section id="amazon-prime">
-            <h2>Amazon Prime</h2>
-            <div class="grid-container"></div>
-        </section>
-        <section id="apple-tv">
-            <h2>Apple TV+</h2>
-            <div class="grid-container"></div>
-        </section> -->
         <div id="info-modal" class="modal">
             <div class="modal-content popout">
               <span class="close-btn">&times;</span>

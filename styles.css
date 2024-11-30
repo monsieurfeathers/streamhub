@@ -182,38 +182,89 @@ section h2 {
     margin: 2rem 0;
     text-align: center;
 }
+
   
 .tab-menu {
     display: flex;
     justify-content: flex-start;
-    margin-bottom: 1rem;
+    flex-direction: row;
+    padding-left: 2rem;
+    margin: 0 1rem;
 }
   
 .tab {
-    background-color: #333;
-    color: white;
-    padding: 0.5rem 1rem;
-    margin: 0 0.5rem;
-    border: none;
+    background-color: #141427;
+    color: #888;
+    padding: 10px 20px;
+    border: 0px solid #aaa;
+    border-bottom: none;
     cursor: pointer;
-    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s, color 0.3s, border-radius 0.3s;
 }
   
 .tab.active {
-    background-color: #ff4747;
+    background-color: #30303d;
+    color: white;
+    font-weight: bold;
+    border: 1px solid white;
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
 }
   
+.tab:hover {
+    color: white;
+    background-color: #4a4a69;
+    border-radius: 5px 5px 0 0;
+}
+
+.tab-items {
+    border: 2px solid white;
+    border-radius: 10px;
+    padding: 1rem;
+    margin: 0 2rem;
+}
+
 .media-switch {
     display: flex;
     justify-content: flex-start;
     margin-bottom: 1rem;
-}
-  
-.media-switch label {
-    margin: 0 1rem;
-    cursor: pointer;
+    width: 20vh;
+    border-radius: 6px;
+    overflow: hidden;
+    outline: 2px solid #aaa;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
+.media-tab {
+    min-width: 50%;
+    padding: 10px 5px;
+    background-color: #141427;
+    color: #aaa;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    border: none;
+}
+
+.media-tab.active {
+    background-color: #30303d;
+    color: white;
+    border: none;
+    font-weight: bold;
+}
+
+.media-tab:hover {
+    background-color: #4a4a69;
+}
+
+/* 
+input[type="radio"] + label:before {
+    content: "";
+    display: inline-block;
+    border-radius: 50%;
+    background-color: #fff;
+} */
+  
 .modal {
     display: none; /* Hidden by default */
     position: fixed;

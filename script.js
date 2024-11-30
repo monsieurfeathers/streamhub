@@ -22,7 +22,7 @@ function loadDiscoverContent(networkId = 213, providerId = 8, mediaType = 'movie
 
 function sectionMediaType(sectionId) {
   if (sectionId === "discover-streaming") {
-    return document.querySelector(".media-switch input:checked").value; // Returns either 'movie' or 'tv'
+    return document.querySelector(".media-switch .active").dataset.type; // Returns either 'movie' or 'tv'
   }
   const url = sections[sectionId];
   if (!url) return null;
@@ -36,16 +36,27 @@ document.querySelectorAll(".tab-menu .tab").forEach(tab => {
     
     const networkId = tab.dataset.network;
     const providerId = tab.dataset.provider;
-    const mediaType = document.querySelector(".media-switch input:checked").value;
+    const mediaType = document.querySelector(".media-switch .active").dataset.type;
+    console.error(mediaType, networkId, providerId);
     loadDiscoverContent(networkId, providerId, mediaType);
   });
 });
 
-document.querySelectorAll(".media-switch input").forEach(input => {
-  input.addEventListener("change", () => {
-    const mediaType = input.value;
+document.querySelectorAll(".media-tab").forEach(button => {
+  button.addEventListener("click", () => {
+    // Remove the active class from all buttons
+    document.querySelector(".media-tab.active").classList.remove("active");
+
+    // Add the active class to the clicked button
+    button.classList.add("active");
+
+    // Get the selected media type
+    const mediaType = button.dataset.type;
     const networkId = document.querySelector(".tab-menu .active").dataset.network;
-    loadDiscoverContent(networkId, mediaType);
+    const providerId = document.querySelector(".tab-menu .active").dataset.provider;
+    console.error(mediaType, networkId, providerId);
+    // Load content dynamically
+    loadDiscoverContent(networkId, providerId, mediaType);
   });
 });
 
@@ -93,7 +104,7 @@ function renderGridItems(items) {
             <img src="${image}" alt="${title}">
           </div>
           <div class="grid-item-info">
-            <h4>${capString(title, 44)}</h4>
+            <h4>${capString(title, 30)}</h4>
             <h4>${rating}</h4>
             <p>${year}</p>
           </div>
@@ -349,7 +360,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const urlParams = new URLSearchParams(window.location.search);
   const mediaType = urlParams.get('type'); // movie or tv
   const id = urlParams.get('id');
-  const name = urlParams.get('name')
+  const name = urlParams.get('name');
   const season = urlParams.get('s');
   const episode = urlParams.get('e');
 

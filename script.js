@@ -1,4 +1,5 @@
-const API_KEY = '213d830aae3a2f7b67e37f157405a42e';
+const API_KEY = "213d830aae3a2f7b67e37f157405a42e";
+
 const BASE_URL = 'https://api.tmdb.org/3';
 const IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 const OPTIONS = 'include_null_first_air_dates=false&language=en-US&page=1&sort_by=popularity.desc';
@@ -12,16 +13,18 @@ const sections = {
 function loadDiscoverContent(networkId = 213, providerId = 8, mediaType = 'movie') {
   const url = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&with_networks=${networkId}&with_watch_providers=${providerId}&watch_region=US&${OPTIONS}`;
   const sectionId = 'discover-streaming';
-  fetchContent(sectionId, url, limit = 12)
+  fetchContent(sectionId, url, limit = 14)
 }
 
 function sectionMediaType(sectionId) {
+  //return document.getElementById(sectionId).dataset.type;
+  
   if (sectionId === "discover-streaming") {
     return document.querySelector(".media-switch .active").dataset.type; // Returns either 'movie' or 'tv'
   }
   const url = sections[sectionId];
   if (!url) return null;
-  return url.includes("/tv") ? "tv" : "movie";
+     return url.includes("/tv") ? "tv" : "movie";
 }
 
 document.querySelectorAll(".tab-menu .tab").forEach(tab => {
@@ -85,6 +88,7 @@ function capString(str, containerWidth) {
 //
 // Function to render grid items
 function renderGridItems(items) {
+ //const mediaType = document.querySelector("section").dataset.type? type : null;
   return items
     .map(item => {
       const title = item.title || item.name;
@@ -94,12 +98,12 @@ function renderGridItems(items) {
         ? `${IMAGE_URL}${item.poster_path}`
         : 'https://placehold.co/440x661/383852/ccc?text=No+Image';
       return `
-        <div class="grid-item popout" data-id="${item.id}" data-media-type="${item.media_type}">
+        <div class="grid-item" data-id="${item.id}" data-media-type="${item.media_type}">
           <div>
             <img src="${image}" alt="${title}">
           </div>
           <div class="grid-item-info">
-            <p>${capString(title, 30)}</p>
+            <p>${capString(title, 45)}</p>
             <p>${rating}</p>
             <p>${year}</p>
           </div>
@@ -110,7 +114,7 @@ function renderGridItems(items) {
 }
 
 // Fetch and display data with a customizable limit
-async function fetchContent(sectionId, url, limit = 12) {
+async function fetchContent(sectionId, url, limit = 14) {
   try {
     const response = await fetch(url);
     const data = await response.json();
@@ -155,27 +159,89 @@ document.addEventListener("DOMContentLoaded", () => {
 // Handle Search
 async function handleSearch() {
   const query = document.getElementById('search-input').value.trim();
-  if (!query) {
-    alert('Please enter a search term!');
-    return;
-  }
+  const movieUrl = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
+  const tvUrl = `${BASE_URL}/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
+  const peopleUrl = `${BASE_URL}/search/person?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
 
-  const url = `${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
   try {
-    const response = await fetch(url);
-    const data = await response.json();
-    displaySearchResults(data.results);
+    var [movie, tv, people] = await Promise.all([
+      fetch(movieUrl).then(res => res.json()),
+      fetch(tvUrl).then(res => res.json()),
+      fetch(peopleUrl).then(res => res.json())
+    ]);
+
+  var movie = movie.results.slice(0, 7).map(item => ({ ...item, media_type: 'movie' }));
+  var tv = tv.results.slice(0, 7).map(item => ({ ...item, media_type: 'tv' }));
+  var people = people.results.slice(0, 7).map(item => ({ ...item, media_type: 'person' }));
+
+
+    displaySearchResults({ movie, tv, people}, query);
   } catch (error) {
-    console.error('Error fetching search results:', error);
+    console.error("Error fetching search results:", error);
   }
 }
 
 // Display search results
-function displaySearchResults(results) {
+
+function displaySearchResults({ movie, tv, people }, query) {
+  const mainContent = document.querySelector('main');
+  mainContent.innerHTML = `
+    <h1>Search Results for "${query}"</h1>
+    <section id="movie-results" data-type="movie">
+      <h3>Movies</h3>
+      <div class="grid-container">
+        ${renderGridItems(movie)}        
+      </div>
+    </section>
+    <section id="tv-results" data-type="tv">
+      <h3>TV Shows</h3>
+      <div class="grid-container">
+        ${renderGridItems(tv)}
+      </div>
+    </section>
+    <section id="people-results" data-type="people">
+    <h3>People</h3>
+      ${renderProfile(people)}  
+    </section>
+    <div id="info-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <div id="modal-details"></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderProfile(items) {
+  return items
+    .map(item => {
+      const name = item.name || item.original_name;
+ //     const rating = truncate(item.vote_average, 1);
+//    const year = extractYear(item.release_date || item.first_air_date);
+      const image = item.profile_path
+        ? `${IMAGE_URL}${item.profile_path}`
+        : 'https://placehold.co/440x661/383852/ccc?text=No+Image';
+      return `
+        <div class="profile-item" data-id="${item.id}" data-media-type="${item.media_type}">
+          <div>
+            <img src="${image}" alt="${name}">
+          </div>
+          <div class="grid-item-info">
+            <p>${capString(name, 30)}</p>
+          </div>
+        </div>
+      `;
+    })
+    .join('');
+}
+
+
+/* function displaySearchResults(results, query) {
   const mainContent = document.querySelector('main');
   mainContent.innerHTML = `
     <section id="search-results">
-      <h2>Search Results</h2>
+      <h2>Search Results : ${query}</h2>
+      <h2></h2>
       <div class="grid-container">
         ${renderGridItems(results)}
       </div>
@@ -189,7 +255,7 @@ function displaySearchResults(results) {
     </div>
   `;
 }
-
+ */
 //fetch Metadata
 async function fetchMetaData(mediaType, id) {
   try {
@@ -215,7 +281,9 @@ async function openModal(event) {
 
   const id = gridItem.dataset.id; // Get the ID of the item
   const sectionId = gridItem.closest('section')?.id; // Find the parent section's ID
-  const mediaType = sectionId ? sectionMediaType(sectionId) : null;
+  const mediaType = gridItem.closest('section')?.dataset.type ? gridItem.closest('section')?.dataset.type : sectionId ? sectionMediaType(sectionId) : null;
+//  const mediaType = sectionId ? sectionMediaType(sectionId) : null;
+  console.log(id,mediaType,sectionId);
   //console.error(id, sectionId, mediaType);
   if (!mediaType || !id) {
     console.error("Media type or ID not found");
@@ -424,11 +492,16 @@ window.addEventListener("popstate", (event) => {
 });
 
 // Close modal on click
-document.querySelector('.close-btn').addEventListener('click', () => {
+function closeModal() {
+  document.getElementById('info-modal').style.display = 'none';
+  window.history.pushState({}, '', `/`);
+}
+
+/* document.querySelector('.close-btn').addEventListener('click', () => {
   document.getElementById('info-modal').style.display = 'none';
   window.history.pushState({}, '', `/`);
   //window.history.back();
-});
+}); */
 
 // Attach event listener for modal
 document.addEventListener('click', openModal);

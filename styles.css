@@ -12,8 +12,14 @@ body {
 
 /* Navbar */
 header {
-    background-color: #0e0e1b;
+    z-index: 1000;
+    position: fixed;
+    top:0;
+    background-color: #0e0e1bcc;
+    backdrop-filter: blur(20px);
     padding: 0.2rem;
+    width: 100%;
+    margin: 0;
 }
 
 nav ul {
@@ -22,7 +28,7 @@ nav ul {
     flex-direction: row;
     gap: 4vw;
     padding: 0 1.2rem;
-    margin: 12px;
+    margin: 8px;
 }
 
 nav ul li {
@@ -32,7 +38,7 @@ nav ul li {
 nav ul li a {
     text-decoration: none;
     color: white;
-    font-size: 1.1rem;
+    font-size: 16px;
     font-weight: bold;
     transition: color 0.3s;
 }
@@ -44,84 +50,87 @@ nav ul li a:hover {
 /* Search Bar Styling */
 .search-bar {
     display: flex;
+    justify-content: space-between;
+    background-color: #383852;
+    border-radius: 6px;
+    padding: 0rem;
+    margin: 0.2rem;
     margin-left: auto;
-    background-color: #1a1a25;
-    border-radius: 5px;
-    padding: 0.5rem;
-    max-width: 46%;
-    min-width: 24%;
+    max-height: 5vh;
+    width: fit-content;
+    border: 2px solid #383852c4;
+    outline: 3px transparent;
+    transition: outline 0.1s, border 0.1s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   }
   
-  .search-bar input {
+.search-bar input {
     padding: 0.5rem;
     border: none;
     border-radius: 5px;
-    background-color: #0e0e1b;
+    background-color: transparent;
     color: white;
-    font-size: 1rem;
+    font-size: 14px;
     outline: none;
-    width: 20vw;
-  }
-  
-  .search-bar button {
-    padding: 0.5rem 1rem;
-    background-color: #ff4747;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 0.86rem;
-    cursor: pointer;
-    margin-left: 0.5rem;
-  }
-  
-  .search-bar button:hover {
-    background-color: #e63e3e;
-  }
-  
+    margin: 0;
+}
+
+.search-bar:focus-within {
+    border: 2px solid #39396e;
+    outline: 3px solid #39396e67;
+}
+
+#search-button {
+    background-color: transparent;
+    padding: 0.4rem;
+    margin: 0;
+    filter: invert(1) brightness(0.5);
+}
 
 /* Sections */
 main {
+    margin-top: 3rem ;
     padding: 1rem 2rem;
 }
 
 section {
-    margin-bottom: 3rem;
+    margin: 2rem 0;
+    padding: 0.8rem;
 }
 
 section h2 {
-    font-size: 2rem;
+    font-size: 28px;
     margin-bottom: 1.6rem;
     text-align: left;
 }
 
 /* Grid Layout */
 
-.grid-container {
+/* .grid-container {
     display: flex;
     flex-wrap: wrap;
     flex: 1;
-    gap: 1.2vw;
-    justify-content: center;
-}
-
-/* .grid-container {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 2vw;
-    border: 2px solid red;
+    gap: 0.5rem;
 } */
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    justify-content: space-between;
+    row-gap: 0.5rem;
+}
 
 .grid-item {
     display: flex;
     flex-direction: column;
-    width: 13vw;
+    max-width: 12.8vw;
     height: 22vw ;
     aspect-ratio: 1 / 1.695;
     text-align: center;
     border-radius: 10px;
     transition: padding 0.5s, box-shadow 0.3s ease-in;
-    padding: 0.7rem;
-    border: 1px solid #383852a6;
+    padding: 0.6rem;
+    border: 1px solid #222233;
     transition: transform 0.3s, box-shadow 0.3s, border 0.3s;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     /* box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7); */
@@ -132,6 +141,7 @@ section h2 {
     transform: scale(1.03);
     box-shadow: 0 10px 24px rgb(8, 8, 22);
     border: 1px solid #383852e5;
+    cursor: pointer;
 }
 
 .grid-item img {
@@ -151,8 +161,8 @@ section h2 {
 }
 
 .grid-item-info p {
-    font-size: 0.96vw;
-    max-width: 85%;
+    font-size: 12px;
+    max-width: 88%;
 }
 
 .grid-item-info p:nth-last-child(1) {
@@ -179,6 +189,7 @@ section h2 {
 
 #discover-streaming {
     margin: 1.2rem 0;
+    padding: 0;
     text-align: center;
 }
 
@@ -187,8 +198,8 @@ section h2 {
     display: flex;
     justify-content: flex-start;
     flex-direction: row;
-    padding-left: 1.7rem;
-    margin: 0 4rem;
+    padding-left: 1rem;
+    margin: 0rem;
 }
   
 .tab {
@@ -222,14 +233,13 @@ section h2 {
 .tab-items {
     border: 1px solid #3838528c;
     border-radius: 10px;
-    padding: 1rem;
-    margin: 0 4.5rem;
+    padding: 0.8rem;
 }
 
 .media-switch {
     display: flex;
     justify-content: flex-start;
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
     width: 12%;
     text-wrap: nowrap ;
     border-radius: 6px;
@@ -258,14 +268,48 @@ section h2 {
     background-color: #4a4a69;
 }
 
-/* 
-input[type="radio"] + label:before {
-    content: "";
-    display: inline-block;
-    border-radius: 50%;
-    background-color: #fff;
-} */
-  
+#search-results h3 {
+    font-size: 24px;
+    margin: 1rem 0 0.5rem 0;
+}
+
+#search-results {
+    border: 2px solid red;
+}
+#movie-results, #tv-results, #people-results {
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1;
+    gap: 0.8vw;
+    justify-content: flex-start;
+    margin-bottom: 2rem;
+}
+#movie-results, #tv-results, #people-results h3 {
+    display: block;
+    width: 100%;
+}
+
+.profile-item {
+    display: flex;
+    flex-direction: column;
+    width: 13vw;
+    height: 20vw ;
+    aspect-ratio: 1 / 1.695;
+    text-align: center;
+    border-radius: 10px;
+    transition: padding 0.5s, box-shadow 0.3s ease-in;
+    padding: 0.7rem;
+    border: 1px solid #383852a6;
+    transition: transform 0.3s, box-shadow 0.3s, border 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    /* box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7); */
+}
+
+.profile-item img {
+    border-radius: 10px;
+    width: 100%;
+}
+
 .modal {
     display: none; /* Hidden by default */
     position: fixed;
@@ -289,7 +333,7 @@ input[type="radio"] + label:before {
     border-radius: 10px;
     border: 1px solid #3838526b;
     background-color: #141427;
-    backdrop-filter: blur(80px);
+    backdrop-filter: blur(60px);
     background-color: rgba(20, 20, 39, 0.801);
 }
 
@@ -389,12 +433,12 @@ input[type="radio"] + label:before {
 }
 
 select {
-    background-color:#30303d ;
+    background-color: #222233;
     color: white;
-    border: 0px;
     font-size: 16px;
     padding: 0.6rem;
     border-radius: 5px;
+    border: 1px solid #38385285;
     box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
 }
 option {
@@ -482,7 +526,7 @@ option {
     position: relative;
     margin-top: 2vh;
     width: 76%;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 16 / 8;
     box-shadow: 0 0 26px rgba(0, 0, 0, 0.76);
   }
   

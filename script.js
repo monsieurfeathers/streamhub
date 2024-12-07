@@ -1,5 +1,4 @@
 const API_KEY = "213d830aae3a2f7b67e37f157405a42e";
-
 const BASE_URL = 'https://api.tmdb.org/3';
 const IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 const OPTIONS = 'include_null_first_air_dates=false&language=en-US&page=1&sort_by=popularity.desc';
@@ -434,46 +433,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 function loadWatchPage(mediaType, name = null, id, season = null, episode = null) {
-  let iframeSrc;
-  if (mediaType === "movie") {
-    info = `${name}`;
-    iframeSrc = `https://vidlink.pro/movie/${id}`;
-  } else if (mediaType === "tv") {
-    info = `S${season}:E${episode} ${name}`;
-    iframeSrc = `https://vidlink.pro/tv/${id}/${season}/${episode}`; ///*https://www.2embed.skin/embedtv/${id}&s=${season}&e=${episode}*/
-  }
+  const info = `${mediaType === "movie" ? name : `S${season}:E${episode} ${name}`}`;
+  let source = 1;
 
+  function updateSource(newSource) {
+    source = newSource;
+  }
     const watchPage = `
     <div class="watch-page">
     <div class="player-container">
+      <div class="player">
         <!-- Placeholder until iframe loads -->
         <div class="loading">Loading player...</div>
         <iframe
-          src="${iframeSrc}"
+          src="${loadSources(source, mediaType, id, season, episode)}"
+          referrerpolicy="origin"
           frameborder="0"
           scrolling="no"
           allowfullscreen
           style="display: none;"
           onload="showIframe(this)"
         ></iframe>
+        <div class="dropdown">
+          <button class="dropbtn">Select Source</button>
+          <div class="dropdown-content">
+            <a href="#" onclick="${updateSource(1)}">Vidlink</a>
+            <a href="#" onclick="${updateSource(2)}">Embed.su</a>
+            <a href="#" onclick="${updateSource(3)}">Vidsrc</a>
+          </div>
+        </div>
         <h2>${info}</h2>
       </div>
     </div>
+    </div>
     `;
 
-    const pageHead = `
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${info}</title>
-    <link rel="stylesheet" href="styles.css">
-    `;
+    const pageTitle = `${info}`;
   document.querySelector("main").innerHTML = watchPage;
-  document.querySelector("head").innerHTML = pageHead;
-  window.history.pushState({}, '', `/watch/${id}${season && episode ? `/${season}/${episode}` : ''}`);
+  document.querySelector("title").innerHTML = pageTitle;
+//  window.history.pushState({}, '', `/watch/${id}${season && episode ? `/${season}/${episode}` : ''}`);
 }
 
-function goBack() {
-  window.history.back();
+function loadSources(source, mediaType, id, season = null, episode = null) {
+  switch (source) {  // vidlink.pro //
+    case 1:
+      return `https://vidlink.pro/${mediaType}/${id}${season && episode ? `/${season}/${episode}` : ''}`;
+    case 2:   // vidsrc.xyz //
+      return `https://embed.su/embed/${mediaType}/${id}${season && episode ? `/${season}/${episode}` : ''}`;
+    case 3:
+      return `https://vidsrc.icu/embed/${mediaType}/${id}${season && episode ? `/${season}/${episode}` : ''}`;
+    default:
+      return `https://vidlink.pro/${mediaType}/${id}${season && episode ? `/${season}/${episode}` : ''}`;
+  }
 }
 
 function showIframe(iframe) {
@@ -481,6 +492,11 @@ function showIframe(iframe) {
   iframe.style.display = "block";
   document.querySelector(".loading").style.display = "none";
 }
+
+function goBack() {
+  window.history.back();
+}
+
 
 // Listen to popstate events for navigation
 window.addEventListener("popstate", (event) => {

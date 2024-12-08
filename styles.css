@@ -8,11 +8,13 @@
 body {
     background-color: #141427;
     color: white;
+    scrollbar-width: regular;
+    scrollbar-color: #383852 #222233 ;
 }
 
 /* Navbar */
 header {
-    z-index: 1000;
+    z-index: 1;
     position: fixed;
     top:0;
     background-color: #0e0e1ba6;
@@ -300,7 +302,6 @@ section h2 {
     aspect-ratio: 1 / 1.695;
     text-align: center;
     border-radius: 10px;
-    transition: padding 0.5s, box-shadow 0.3s ease-in;
     padding: 0.7rem;
     border: 1px solid #383852a6;
     transition: transform 0.3s, box-shadow 0.3s, border 0.3s;
@@ -522,7 +523,6 @@ option {
     height: 90.4vh;
     background-color: #141427;
     color: white;
-    border: 2px solid red;
 }
 
 
@@ -531,25 +531,23 @@ option {
     height: 100%;
     margin: auto;
     align-content: center;
-    border: 2px solid blue;
 }
 
 .player {
     aspect-ratio: 16 / 8;
-    box-shadow: 0 0 26px rgba(0, 0, 0, 0.76);
     margin: auto;
-    max-height: 86%;
-    border: 2px solid red;
+    max-height: 82%;
     border-radius: 5px;
+    background-color: #000;
+    box-shadow: 0 0 26px rgba(0, 0, 0, 0.76);
 }
 
 .loading {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    aspect-ratio: 16 / 8;
+    height: 74.2%;
     display: flex;
+    width: inherit;
     align-items: center;
     justify-content: center;
     background: #30303d;
@@ -557,56 +555,83 @@ option {
     font-size: 1.5rem;
     z-index: 10;
 }
-  
+
+.iframe-container {
+    width: 100%;
+    height: 94%;
+}
+
 iframe {
     border-radius: 5px;
     width: 100%;
     height: 100%;
 }
 
+.player-toolbar {
+    width: 100%;
+    height: 6%;
+    background-color: #222233;
+    border-radius: 0 0 5px 5px;
+    align-content: center;
+}
+
 /* Dropdown container */
-.dropdown {
+.provider-menu {
     position: relative;
-    display: inline-block;
-    margin-bottom: 10px;
+    width: fit-content;
+    height: 100%;
   }
   
-  /* Dropdown button */
-  .dropbtn {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 15px;
-    font-size: 16px;
-    border: none;
+/* Dropdown button */
+.provider-change {
+    width: 10vh;
+    height: 100%;
+    font-size: 12px;
+    color: #eee;
+    background-color: transparent;
     cursor: pointer;
+    border: none;
     border-radius: 5px;
-  }
+}
   
   /* Dropdown content */
-  .dropdown-content {
-    display: none;
+.providers {
     position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-  }
-  
+    bottom: 100%; /* Drop up instead of down */
+    left: 2px;
+    width: 12vh;
+    max-height: 0vh; /* Responsive height */
+    overflow: hidden;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    transition: max-height 0.3s, bottom 0.3s, background-color 0.5s ease-out;
+    background-color: transparent; /* Default background */
+}
+
+.providers p {
+    display: none;
+}
   /* Links inside the dropdown */
-  .dropdown-content a {
-    color: black;
-    padding: 8px 12px;
-    text-decoration: none;
+.provider-menu:hover .providers p {
     display: block;
-  }
+    color: #eee;
+    font-size: 12px;
+    padding: 8px;
+    display: block;
+    cursor: pointer;
+}
   
   /* Show dropdown on hover */
-  .dropdown:hover .dropdown-content {
+.provider-menu:hover .providers {
     display: block;
-  }
+    bottom: calc(100% + 2px); /* Position the menu above the button with spacing */
+    max-height: 40vh; /* Set the expanded height */
+    background-color: #222233;
+    box-shadow: 0px -8px 16px 0px rgba(0, 0, 0, 0.2);
+    border: 1px solid #444;
+}
   
   /* Change color of links on hover */
-  .dropdown-content a:hover {
-    background-color: #f1f1f1;
-  }
-  
+.providers p:hover {
+    background-color: #383852;
+}

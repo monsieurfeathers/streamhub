@@ -404,7 +404,8 @@ document.addEventListener("click", (event) => {
   if (event.target.classList.contains("watch-btn")) {
     const id = event.target.dataset.id; // Get the movie ID
     const name = event.target.dataset.name;
-    window.location.href = `watch.html?type=movie&id=${id}&name=${name}`;
+    //window.location.href = `watch.html?type=movie&id=${id}&name=${name}`;
+    loadWatchPage(mediaType = movie , name, id, season = null, episode = null);
   }
 
   // Handle Episode Image Click (TV)
@@ -414,11 +415,12 @@ document.addEventListener("click", (event) => {
     const id = episodeElement.dataset.id;
     const season = episodeElement.dataset.season;
     const episode = episodeElement.dataset.episode;
-    window.location.href = `watch.html?type=tv&id=${id}&s=${season}&e=${episode}&name=${name}`;
+    //window.location.href = `watch.html?type=tv&id=${id}&s=${season}&e=${episode}&name=${name}`;
+    loadWatchPage(mediaType = tv, name, id, season, episode);
   }
 });
 
-document.addEventListener("DOMContentLoaded", () => {
+/*document.addEventListener("DOMContentLoaded", () => {
   const urlParams = new URLSearchParams(window.location.search);
   const mediaType = urlParams.get('type'); // movie or tv
   const id = urlParams.get('id');
@@ -429,7 +431,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (mediaType && id) {
     loadWatchPage(mediaType, name, id, season, episode);
   }
-});
+});*/
 
 function loadWatchPage(mediaType, name = null, id, season = null, episode = null) {
   const info = `${mediaType === "movie" ? name : `S${season}:E${episode} ${name}`}`;
@@ -464,7 +466,7 @@ function loadWatchPage(mediaType, name = null, id, season = null, episode = null
 
   // Initialize default source
   loadSources(source, mediaType, id, season, episode);
-  window.history.pushState({}, '', `/watch/${mediaType}/${id}/${name}${season && episode ? `/${season}/${episode}` : ''}`);
+  //window.history.pushState({}, '', `/watch/${mediaType}/${id}/${name}${season && episode ? `/${season}/${episode}` : ''}`);
   
   // Add event listeners to dropdown items
   const sourceItems = document.querySelectorAll('.providers p');

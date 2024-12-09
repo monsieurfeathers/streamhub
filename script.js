@@ -476,6 +476,7 @@ function loadWatchPage(mediaType, name = null, id, season = null, episode = null
       }
     });
   });
+  window.history.pushState({}, '', `/watch/${mediaType}/${id}/${name}${season && episode ? `/${season}/${episode}` : ''}`);
 }
 
 function loadSources(source, mediaType, id, season = null, episode = null) {

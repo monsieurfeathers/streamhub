@@ -6,7 +6,7 @@
   "scripts": {
     "start": "live-server"
   },
-  "author": "Your Name",
+  "author": "Duckboi",
   "license": "MIT",
   "dependencies": {
     "dotenv": "^16.0.0"

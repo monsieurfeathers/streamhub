@@ -405,7 +405,7 @@ document.addEventListener("click", (event) => {
     const id = event.target.dataset.id; // Get the movie ID
     const name = event.target.dataset.name;
     //window.location.href = `watch.html?type=movie&id=${id}&name=${name}`;
-    loadWatchPage(mediaType = movie , name, id, season = null, episode = null);
+    loadWatchPage(mediaType = "movie" , name, id, season = null, episode = null);
   }
 
   // Handle Episode Image Click (TV)
@@ -416,7 +416,7 @@ document.addEventListener("click", (event) => {
     const season = episodeElement.dataset.season;
     const episode = episodeElement.dataset.episode;
     //window.location.href = `watch.html?type=tv&id=${id}&s=${season}&e=${episode}&name=${name}`;
-    loadWatchPage(mediaType = tv, name, id, season, episode);
+    loadWatchPage(mediaType = "tv", name, id, season, episode);
   }
 });
 

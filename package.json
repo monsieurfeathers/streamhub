@@ -1,17 +1,20 @@
 {
-  "name": "streamhub",
-  "version": "1.0.0",
-  "description": "A streaming website project fetching data from The Movie Database API.",
-  "main": "index.html",
-  "scripts": {
-    "start": "live-server"
-  },
-  "author": "Duckboi",
-  "license": "MIT",
-  "dependencies": {
-    "dotenv": "^16.0.0"
-  },
-  "devDependencies": {
-    "live-server": "^1.2.1"
+    "name": "streamhub",
+    "version": "1.0.0",
+    "description": "A template for HTML and CSS",
+    "main": "index.html",
+    "scripts": {
+      "start": "serve"
+    },
+    "keywords": [
+      "html",
+      "css",
+      "js"
+    ],
+    "author": "Ives van Hoorne",
+    "license": "MIT",
+    "devDependencies": {
+      "serve": "11.2.0"
+    }
   }
-}
+  

@@ -464,7 +464,8 @@ function loadWatchPage(mediaType, name = null, id, season = null, episode = null
 
   // Initialize default source
   loadSources(source, mediaType, id, season, episode);
-
+  window.history.pushState({}, '', `/watch/${mediaType}/${id}/${name}${season && episode ? `/${season}/${episode}` : ''}`);
+  
   // Add event listeners to dropdown items
   const sourceItems = document.querySelectorAll('.providers p');
   sourceItems.forEach(item => {
@@ -476,7 +477,6 @@ function loadWatchPage(mediaType, name = null, id, season = null, episode = null
       }
     });
   });
-  window.history.pushState({}, '', `/watch/${mediaType}/${id}/${name}${season && episode ? `/${season}/${episode}` : ''}`);
 }
 
 function loadSources(source, mediaType, id, season = null, episode = null) {

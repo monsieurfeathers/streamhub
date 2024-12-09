@@ -1,0 +1,17 @@
+{
+  "name": "streamhub",
+  "version": "1.0.0",
+  "description": "A streaming website project fetching data from The Movie Database API.",
+  "main": "index.html",
+  "scripts": {
+    "start": "live-server"
+  },
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  }
+}

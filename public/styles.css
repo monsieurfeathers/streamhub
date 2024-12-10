@@ -146,10 +146,9 @@ section h2 {
     flex-direction: column;
     max-width: 100%;
     height: auto ;
-    aspect-ratio: 1 / 1.695;
+    aspect-ratio: 1 / 1.67;
     text-align: center;
     border-radius: var(--border-radius1);
-    transition: padding 0.5s, box-shadow 0.3s ease-in;
     padding: 0.6rem;
     border: 1px solid #222233;
     transition: transform 0.3s, box-shadow 0.3s, border 0.3s;
@@ -167,8 +166,8 @@ section h2 {
 
 .grid-item img {
     border-radius: var(--border-radius1);
-    aspect-ratio: 1 / 1.50227;
-    object-fit: fill;
+    aspect-ratio: 1 / 1.40;
+    object-fit: cover;
     width: 100%;
 }
 
@@ -291,33 +290,35 @@ section h2 {
     background-color: #4a4a69;
 }
 
-#search-results h3 {
-    font-size: 24px;
-    margin: 1rem 0 0.5rem 0;
+#search-results {
+    height: fit-content;
 }
 
-#search-results {
-    border: 2px solid red;
+#search-results h1 {
+    font-size: 28px;
+    margin: 1rem 0 0.5rem 1rem;
+    padding: 0;
 }
+
 #movie-results, #tv-results, #people-results {
     display: flex;
     flex-wrap: wrap;
     flex: 1;
-    gap: 0.8vw;
+    gap: 0.8rem;
     justify-content: flex-start;
-    margin-bottom: 2rem;
 }
-#movie-results, #tv-results, #people-results h3 {
-    display: block;
+
+#movie-results h3, #tv-results h3, #people-results h3 {
+    font-size: 22px;
     width: 100%;
 }
 
 .profile-item {
     display: flex;
     flex-direction: column;
-    width: 13vw;
-    height: 20vw ;
-    aspect-ratio: 1 / 1.695;
+    aspect-ratio: 1 / 1.4;
+    max-width: 100%;
+    height: 28vh;
     text-align: center;
     border-radius: var(--border-radius1);
     padding: 0.7rem;
@@ -327,9 +328,27 @@ section h2 {
     /* box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7); */
 }
 
+
+.profile-item:hover{
+    transform: scale(1.03);
+    box-shadow: 0 6px 15px rgb(8, 8, 22);
+    border: 1px solid #383852e5;
+    cursor: pointer;
+}
+
 .profile-item img {
     border-radius: var(--border-radius1);
     width: 100%;
+    aspect-ratio: 1 / 1.2;
+    object-fit: cover;
+}
+
+.profile-item-info {
+    margin: auto 0;
+}
+
+.profile-item-info p {
+    font-size: 14px;
 }
 
 .modal {

@@ -185,6 +185,7 @@ async function handleSearch() {
 function displaySearchResults({ movie, tv, people }, query) {
   const mainContent = document.querySelector('main');
   mainContent.innerHTML = `
+    <div id=search-results>
     <h1>Search Results for "${query}"</h1>
     <section id="movie-results" data-type="movie">
       <h3>Movies</h3>
@@ -200,13 +201,16 @@ function displaySearchResults({ movie, tv, people }, query) {
     </section>
     <section id="people-results" data-type="people">
     <h3>People</h3>
+      <div class="grid-container">
       ${renderProfile(people)}  
+      </div>
     </section>
     <div id="info-modal" class="modal">
       <div class="modal-content">
         <span class="close-btn" onclick="closeModal()">&times;</span>
         <div id="modal-details"></div>
       </div>
+    </div>
     </div>
   `;
 }
@@ -225,7 +229,7 @@ function renderProfile(items) {
           <div>
             <img src="${image}" alt="${name}">
           </div>
-          <div class="grid-item-info">
+          <div class="profile-item-info">
             <p>${capString(name, 30)}</p>
           </div>
         </div>

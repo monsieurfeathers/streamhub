@@ -9,7 +9,7 @@
     }
 
     main {
-        padding: 12vh 0.8vh;
+        padding: 11vh 0.6rem;
     }
     
     section {
@@ -27,23 +27,24 @@
     }
     
     .grid-item {
-        min-width: 40vw;
-        max-width: 40vw;
+        aspect-ratio: 1 / 1.65;
+        min-width: 42vw;
+        max-width: 42vw;
         height: auto ;
-        padding: 0.3rem;
+        padding: 0.48rem;
         border-radius: var(--border-radius2);
         /* box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7); */
     }
 
     .grid-item:hover {
-        transform: scale(0.96);
+        transform: scale(0.92);
         box-shadow: 0 2px 5px rgb(8, 8, 22);
     }
 
     .grid-item p {
         font-size: 12px;
         max-width: 85%;
-        line-height: 12px;
+        line-height: 14px;
     }
 
     .grid-item p:nth-last-child(1) {
@@ -51,13 +52,58 @@
     }
 
 
+    #search-results {
+        border: none;
+    }
 
+    #search-results h1 {
+        font-size: 22px;
+        margin: 0rem 0 0.8rem 0;
+    }
+    
+    #movie-results, #tv-results, #people-results {
+        gap: 0.6rem;
+        justify-content: flex-start;
+    }
+    
+    #movie-results h3, #tv-results h3, #people-results h3 {
+        font-size: 18px;
+        display: block;
+        width: 100%;
+    }
 
+    .profile-item {
+        display: flex;
+        flex-direction: column;
+        aspect-ratio: 1 / 1.4;
+        max-width: 100%;
+        height: 22vh;
+        text-align: center;
+        border-radius: var(--border-radius1);
+        padding: 0.48rem;
+        border: 1px solid #383852a6;
+        transition: transform 0.3s, box-shadow 0.3s, border 0.3s;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        /* box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7); */
+    }
 
+    .profile-item:hover{
+        transform: scale(0.96);
+        box-shadow: 0 4px 8px rgb(8, 8, 22);
+    }
+    
+    .profile-item img {
+        aspect-ratio: 1 / 1.2;
+    }
+    
+    .profile-item-info p {
+        font-size: 12px;
+    }
 
 
     .tab-menu {
-        padding: 0 0.8rem;
+        padding: 0 0.44rem;
+        transform: scale(0.96);
     }
       
     .tab {
@@ -93,6 +139,7 @@
     .media-switch {
         min-width: 38%;
         margin-bottom: 0.6rem;
+        transform: scale(0.96);
     }
 
 

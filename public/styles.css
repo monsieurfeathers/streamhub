@@ -36,7 +36,7 @@ header {
     padding: 0.2rem;
     width: 100%;
     margin: 0;
-    height: 9.6vh;
+    height: 9.6dvh;
     align-content: center;
 }
 
@@ -46,12 +46,12 @@ nav ul {
     display: flex;
     flex-direction: row;
     gap: 4vw;
-    padding: 0 1.2rem;
+    padding: 0 0.6rem;
     height: 100%;
 }
 
 nav ul li {
-    padding: 1.8vh 0;
+    padding: 1.8dvh 0;
 }
 
 nav ul li a {
@@ -72,11 +72,12 @@ nav ul li a:hover {
     display: flex;
     justify-content: space-between;
     background-color: var(--color1);
-    border-radius: var(--border-radius2);
+    backdrop-filter: blur(10px);
     padding: 0rem;
     margin: auto 0;
     margin-left: auto;
-    max-height: 5vh;
+    max-height: 5.2dvh;
+    border-radius: var(--border-radius2);
     border: 2px solid #383852c4;
     outline: 3px transparent;
     transition: outline 0.1s, border 0.1s;
@@ -84,11 +85,12 @@ nav ul li a:hover {
   }
   
 .search-bar input {
+    width: 86%;
     padding: 0.5rem;
+    color: var(--font-color1);
+    background-color: transparent;
     border: none;
     border-radius: var(--border-radius2);
-    background-color: transparent;
-    color: var(--font-color1);
     font-size: 14px;
     outline: none;
     margin: 0;
@@ -101,7 +103,7 @@ nav ul li a:hover {
 
 #search-button {
     width: 12%;
-    padding: 1vh;
+    padding: 0.8dvh;
     object-fit: contain;
     background-color: transparent;
     filter: invert(1) brightness(0.6);
@@ -109,19 +111,20 @@ nav ul li a:hover {
 
 /* Sections */
 main {
-    height: 100vh;
+    height: 100dvh;
     overflow: scroll;
-    padding: 9.6vh 1rem;
+    padding: 9.6dvh 1rem 0 1rem;
 }
 
 section {
     padding: 1rem;
     margin-bottom: 1rem;
+    border: 1px solid transparent;
 }
 
 section h2 {
-    font-size: 28px;
-    margin-bottom: 1rem;
+    font-size: 24px;
+    margin: 0.8rem 0;
     text-align: left;
 }
 
@@ -146,7 +149,7 @@ section h2 {
     flex-direction: column;
     max-width: 100%;
     height: auto ;
-    aspect-ratio: 1 / 1.67;
+    aspect-ratio: 1 / 1.55;
     text-align: center;
     border-radius: var(--border-radius1);
     padding: 0.6rem;
@@ -176,14 +179,14 @@ section h2 {
     flex-wrap: wrap;
     justify-content: space-between;
     text-align: left;
-    padding: 0;
-    height: 16.6% ;
+    padding-top: 0.16rem ;
+    height: 18.6%;
 }
 
 .grid-item-info p {
     font-size: 14px;
     max-width: 85%;
-    line-height: 14px;
+    line-height: 15px;
 }
 
 .grid-item-info p:nth-last-child(1) {
@@ -295,7 +298,7 @@ section h2 {
 }
 
 #search-results h1 {
-    font-size: 28px;
+    font-size: 24px;
     margin: 1rem 0 0.5rem 1rem;
     padding: 0;
 }
@@ -318,7 +321,7 @@ section h2 {
     flex-direction: column;
     aspect-ratio: 1 / 1.4;
     max-width: 100%;
-    height: 28vh;
+    height: 28dvh;
     text-align: center;
     border-radius: var(--border-radius1);
     padding: 0.7rem;
@@ -358,7 +361,7 @@ section h2 {
     left: 0;
     top: 0;
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     overflow: hidden;
     backdrop-filter: blur(5px);
     transition: backdrop-filter 0.3s ease;
@@ -370,11 +373,11 @@ section h2 {
     width: 68%;
     height: 80%;
     padding: 2rem;
-    margin: 10vh auto;
+    margin: 10dvh auto;
     border-radius: var(--border-radius1);
     border: 1px solid #3838526b;
     background-color: #141427;
-    backdrop-filter: blur(40px);
+    backdrop-filter: blur(35px);
     background-color: rgba(20, 20, 39, 0.801);
 }
 
@@ -439,6 +442,8 @@ section h2 {
 }
 
 .watch-btn {
+    display: block;
+    margin: 2rem auto;
     padding: 0.6rem 1.2rem;
     font-size: 16px;
     background-color: #4a4a69;
@@ -544,16 +549,21 @@ option {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 90.4vh;
+    height: 90.4dvh;
     background-color: #141427;
     color: var(--font-color1);
+    padding: 2rem 1rem;
 }
 
+.watch-page h2 {
+    font-size: 32px;
+    margin-top: 2rem;
+    margin-right: auto;
+}
 
 .player-container {
     width: 100%;
-    height: 100%;
-    margin: auto;
+    max-height: 100%;
     align-content: center;
 }
 
@@ -562,9 +572,8 @@ option {
     position: relative;
     flex-direction: column;
     aspect-ratio: 16 / 8;
-    margin: auto;
-    max-height: 82%;
-    height: auto;
+    width: 100%;
+    max-height: 88%;
     border-radius: var(--border-radius2);
     background-color: #000;
     box-shadow: 0 0 26px rgba(0, 0, 0, 0.76);
@@ -613,7 +622,7 @@ iframe {
   
 /* Dropdown button */
 .provider-change {
-    width: 10vh;
+    width: 10dvh;
     height: 100%;
     font-size: 12px;
     color: var(--font-color1);
@@ -628,8 +637,8 @@ iframe {
     position: absolute;
     bottom: 100%; /* Drop up instead of down */
     left: 2px;
-    width: 12vh;
-    max-height: 0vh; /* Responsive height */
+    width: 12dvh;
+    max-height: 0dvh; /* Responsive height */
     overflow: hidden;
     border-radius: var(--border-radius2);
     border: 1px solid transparent;
@@ -654,7 +663,7 @@ iframe {
 .provider-menu:hover .providers {
     display: block;
     bottom: calc(100% + 2px); /* Position the menu above the button with spacing */
-    max-height: 40vh; /* Set the expanded height */
+    max-height: 40dvh; /* Set the expanded height */
     background-color: #222233;
     box-shadow: 0px -8px 16px 0px rgba(0, 0, 0, 0.2);
     border: 1px solid #444;

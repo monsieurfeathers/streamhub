@@ -310,9 +310,9 @@ function displayModal(mediaType, data) {
             <p>${data.overview || 'No description available.'}</p>
             <p><strong>Cast : ${cast}</strong></p>
             <p><strong>Release On : ${date}</strong></p>
-          <div><button class="watch-btn" data-name="${name}" data-id="${id}">Watch</button></div>
         </div>
       </div>
+      <div><button class="watch-btn" data-name="${name}" data-id="${id}">Watch</button></div>
     `;
     modal.style.display = 'block';
 
@@ -430,7 +430,7 @@ function loadWatchPage(mediaType, name = null, id, season = null, episode = null
 
   const watchPage = `
     <div class="watch-page">
-      <!-- <h2>${info}</h2> -->
+      <h2>${info}</h2>
       <div class="player-container">
         <div class="player">
           <!-- Placeholder until iframe loads -->

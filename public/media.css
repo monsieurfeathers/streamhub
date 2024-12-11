@@ -4,6 +4,10 @@
         --border-radius2: 5px;
     }
 
+    nav ul {
+        padding: 0 0.6rem;
+    }
+
     .search-bar {
         max-width: 60dvw;
     }
@@ -102,12 +106,14 @@
 
 
     .tab-menu {
-        padding: 0 0.44rem;
-        transform: scale(0.96);
+        padding: 0 0.8rem;
+    }
+
+    .tab-menu button {
+        width: 100%;
     }
       
     .tab {
-        width: fit-content;
         align-content: center;
         padding: 4px;
         border-radius: var(--border-radius2) var(--border-radius2) 0 0;
@@ -214,7 +220,6 @@
         background-color: #141427;
         color: var(--font-color1);
         padding: 0rem;
-        border: 2px solid red;
     }
     
     .watch-page h2 {

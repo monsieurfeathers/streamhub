@@ -46,7 +46,7 @@ nav ul {
     display: flex;
     flex-direction: row;
     gap: 4vw;
-    padding: 0 0.6rem;
+    padding: 0 2rem;
     height: 100%;
 }
 
@@ -58,7 +58,7 @@ nav ul li a {
     text-decoration: none;
     color: var(--font-color1);
     font-family: var(--font-style1);
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
     transition: color 0.3s;
 }
@@ -224,6 +224,10 @@ section h2 {
     flex-direction: row;
     padding-left: 1rem;
     margin: 0rem;
+}
+
+.tab-menu button {
+    height: 5.6dvh;
 }
   
 .tab {

@@ -528,14 +528,35 @@ window.addEventListener("popstate", (event) => {
 // Close modal on click
 function closeModal() {
   document.getElementById('info-modal').style.display = 'none';
-  window.history.pushState({}, '', `/`);
-}
-
-/* document.querySelector('.close-btn').addEventListener('click', () => {
-  document.getElementById('info-modal').style.display = 'none';
-  window.history.pushState({}, '', `/`);
+  //window.history.pushState({}, '', `/`);
   //window.history.back();
-}); */
+}
+let lastScrollY = window.scrollY;
+let isScrollingDown = false;
+let hideTimeout;
+
+window.addEventListener('scroll', () => {
+  const header = document.getElementById('header');
+  
+  if (window.scrollY > lastScrollY) {
+    // Scrolling down
+    if (!isScrollingDown) {
+      isScrollingDown = true;
+      clearTimeout(hideTimeout);
+      hideTimeout = setTimeout(() => {
+        header.classList.add('hidden');
+      }, 500); // 200ms delay before hiding
+    }
+  } else {
+    // Scrolling up
+    isScrollingDown = false;
+    clearTimeout(hideTimeout); // Cancel any pending hide
+    header.classList.remove('hidden'); // No delay to reappear
+  }
+  lastScrollY = window.scrollY;
+});
+
+
 
 // Attach event listener for modal
 document.addEventListener('click', openModal);

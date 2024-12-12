@@ -9,7 +9,7 @@
     --font-color3: #888;
     --border-radius1: 10px;
     --border-radius2: 5px;
-    --font-style1: "Manrope Regular", sans-serif;
+    --font-style1: "Geist", sans-serif;
 }
 
 *, html {
@@ -21,9 +21,11 @@
 
 body {
     font-family: var(--font-style1);
-    background-color: #141427;
+    background-color: #151527;
     color: var(--font-color1);
     scrollbar-color: var(--color1) #222233 ;
+    height: 100%;
+    overflow: scroll;
 }
 
 /* Navbar */
@@ -35,7 +37,7 @@ body {
     padding: 0.2rem;
     margin: 0;
     align-content: center;
-    background-color: #0e0e1ba6;
+    background-color: #0e0e1bbd;
     backdrop-filter: blur(10px);
     transition: top 0.5s ease-in-out;
     z-index: 1000;
@@ -63,7 +65,7 @@ nav ul li a {
     text-decoration: none;
     color: var(--font-color1);
     font-family: var(--font-style1);
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     transition: color 0.3s;
 }
@@ -116,8 +118,6 @@ nav ul li a:hover {
 
 /* Sections */
 main {
-/*     height: 100dvh;
-    overflow: scroll; */
     padding: 8vh 1rem 0 1rem;
 }
 
@@ -189,7 +189,7 @@ section h2 {
 }
 
 .grid-item-info p {
-    font-size: 12px;
+    font-size: 12.4px;
     max-width: 87%;
     line-height: 14px;
 }
@@ -306,6 +306,7 @@ section h2 {
 }
 
 #search-results {
+    margin: 1.2rem 0 0 0;
     height: fit-content;
 }
 
@@ -315,7 +316,8 @@ section h2 {
     padding: 0;
 }
 
-#movie-results, #tv-results, #people-results {
+#search-results > section {
+    margin: 0;
     display: flex;
     flex-wrap: wrap;
     flex: 1;
@@ -323,12 +325,12 @@ section h2 {
     justify-content: flex-start;
 }
 
-#movie-results h3, #tv-results h3, #people-results h3 {
+#search-results > section > h3 {
     font-size: 22px;
     width: 100%;
 }
 
-.profile-item {
+ .profile-item {
     display: flex;
     flex-direction: column;
     aspect-ratio: 1 / 1.4;
@@ -336,7 +338,7 @@ section h2 {
     height: 28dvh;
     text-align: center;
     border-radius: var(--border-radius1);
-    padding: 0.7rem;
+    padding: 0.6rem 0.6rem 0.2rem;
     border: 1px solid #383852a6;
     transition: transform 0.3s, box-shadow 0.3s, border 0.3s;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
@@ -351,19 +353,29 @@ section h2 {
     cursor: pointer;
 }
 
+.profile-item span {
+    height: 75%;
+}
+
 .profile-item img {
     border-radius: var(--border-radius1);
+    height: 100%;
     width: 100%;
-    aspect-ratio: 1 / 1.2;
     object-fit: cover;
 }
 
 .profile-item-info {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    max-height: 100%;
     margin: auto 0;
 }
 
 .profile-item-info p {
     font-size: 14px;
+    line-height: 16px;
+    margin: auto 0;
 }
 
 .modal {
@@ -432,17 +444,23 @@ section h2 {
 .modal-info{
     display: flex;
     flex-wrap: wrap;
+    flex-direction: column;
     align-content: flex-end;
     justify-content: space-between;
     gap: 0.8rem;
     width: 100%;
 }
 
+.modal-info:nth-child(1) {
+    justify-content: flex-start;
+}
+
 .modal-info img {
-    flex: none;
-    max-width: 55%;
+    display: flex;
+    justify-self: flex-start;
+    max-width: 60%;
     max-height: 40%;
-    align-self: flex-start;
+    margin: auto 0;
     object-fit: contain;
 }
 
@@ -542,14 +560,22 @@ option {
     gap: 1rem;
 }
 
-.episode-info h3, .episode-info p {
-    font-size: 14px;
+.episode-item h3, .episode-item p {
     text-align: left;
-    margin: 0.2rem 0;
 }
 
-.episode-items p:nth-child(3) {
+.episode-items h3 {
+    font-size: 15.6px;
+    margin: 0.2rem 0;
+    line-height: 16px;
+}
+
+.episode-items p {
     font-size: 14px;
+    margin: 0rem 0;
+}
+
+.episode-items > p:nth-child(3) {
     width: 100%;
 }
 
@@ -659,6 +685,7 @@ iframe {
 
 .providers p {
     display: none;
+    transition: background-color 0.3s;
 }
   /* Links inside the dropdown */
 .provider-menu:hover .providers p {
@@ -675,12 +702,11 @@ iframe {
     display: block;
     bottom: calc(100% + 2px); /* Position the menu above the button with spacing */
     max-height: 40dvh; /* Set the expanded height */
-    background-color: #222233;
-    box-shadow: 0px -8px 16px 0px rgba(0, 0, 0, 0.2);
-    border: 1px solid #444;
+    background-color: #141427;
+    border: 1px solid #696969;
 }
   
   /* Change color of links on hover */
 .providers p:hover {
-    background-color: var(--primary-color);
+    background-color: var(--color1);
 }

@@ -226,9 +226,9 @@ function renderProfile(items) {
         : 'https://placehold.co/440x661/383852/ccc?text=No+Image';
       return `
         <div class="profile-item" data-id="${item.id}" data-media-type="${item.media_type}">
-          <div>
+          <span>
             <img src="${image}" alt="${name}">
-          </div>
+          </span>
           <div class="profile-item-info">
             <p>${capString(name, 30)}</p>
           </div>

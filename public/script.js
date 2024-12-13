@@ -257,6 +257,12 @@ async function fetchMetaData(mediaType, id) {
     }
 }
 
+function convertDate(dateString) {
+  const options = { month: 'long', day: 'numeric', year: 'numeric' };
+  const formatter = new Intl.DateTimeFormat('en-US', options);
+  return formatter.format(new Date(dateString));
+}
+
 async function openModal(event) {
   const gridItem = event.target.closest('.grid-item'); // Identify the clicked item
   if (!gridItem) return;
@@ -277,15 +283,9 @@ async function openModal(event) {
   });
 }
 
-function convertDate(dateString) {
-  const options = { month: 'long', day: 'numeric', year: 'numeric' };
-  const formatter = new Intl.DateTimeFormat('en-US', options);
-  return formatter.format(new Date(dateString));
-}
 
 // Display modal with fetched data
 function displayModal(mediaType, data) {
-  //const modal = document.querySelector(".modal-content");
   const modal = document.getElementById('info-modal');
   const details = document.getElementById('modal-details');
   const id = data.id;
@@ -296,7 +296,6 @@ function displayModal(mediaType, data) {
     ? `<img src="${IMAGE_URL}${data.images.logos[0].file_path}" alt="Logo">`
     : `<h1>${name}</h1>`;
   //window.history.pushState({}, '', `/${mediaType}/${name}`);
-
 
   if (mediaType === "movie") {
     details.innerHTML = `
@@ -347,53 +346,54 @@ function displayModal(mediaType, data) {
       </div>
     `;
     modal.style.display = 'block';
-
-    // Fetch and display episodes for the selected season
-    const seasonDropdown = document.getElementById('season-dropdown');
-    const episodeContainer = document.getElementById('episode-container');
-
-    seasonDropdown.addEventListener('change', async (event) => {
-      const selectedSeason = event.target.value;
-      try {
-        const response = await fetch(`${BASE_URL}/tv/${data.id}/season/${selectedSeason}?api_key=${API_KEY}`);
-        const seasonData = await response.json();
-        episodeContainer.innerHTML = seasonData.episodes
-          .map(episode => `
-            <div class="episode" data-name="${data.name}" data-id="${data.id}" data-season="${selectedSeason}" data-episode="${episode.episode_number}">
-              <div class="episode-items">
-                <img src="${episode.still_path ? IMAGE_URL + episode.still_path : 'https://placehold.co/500x281?text=No+Image+Available'}" alt="Episode ${episode.episode_number}">
-                <div class="episode-info">
-                  <h3>${episode.episode_number}. ${episode.name}</h3>
-                  <p>Rated: ${episode.vote_average.toFixed(1)}</p>
-                  <p>${convertDate(episode.air_date)}</p>
-                </div>
-                <p>${episode.overview || "No overview available"}</p>
-              </div>
-            </div>
-          `)
-          .join("");
-      } catch (error) {
-        console.error('Error fetching season details:', error);
-        episodeContainer.innerHTML = `<p>Failed to load episodes for Season ${selectedSeason}.</p>`;
-      }
-    });
-
-    seasonDropdown.dispatchEvent(new Event('change'));
+    tvContent(data)
   }
 }
 
+function tvContent(data) {
+  const seasonDropdown = document.getElementById('season-dropdown');
+  const episodeContainer = document.getElementById('episode-container');
+
+  seasonDropdown.addEventListener('change', async (event) => {
+    const selectedSeason = event.target.value;
+    try {
+      const response = await fetch(`${BASE_URL}/tv/${data.id}/season/${selectedSeason}?api_key=${API_KEY}`);
+      const seasonData = await response.json();
+      episodeContainer.innerHTML = seasonData.episodes
+        .map(episode => `
+
+          <div class="episode" data-name="${data.name}" data-id="${data.id}" data-season="${selectedSeason}" data-episode="${episode.episode_number}">
+            <div class="episode-items">
+              <img src="${episode.still_path ? IMAGE_URL + episode.still_path : 'https://placehold.co/500x281?text=No+Image+Available'}" alt="Episode ${episode.episode_number}">
+              <div class="episode-info">
+                <h3>${episode.episode_number}. ${episode.name}</h3>
+                <p>Rated: ${episode.vote_average.toFixed(1)}</p>
+                <p>${convertDate(episode.air_date)}</p>
+              </div>
+              <p>${episode.overview || "No overview available"}</p>
+            </div>
+          </div>
+        `)
+        .join("");
+    } catch (error) {
+      console.error('Error fetching season details:', error);
+      episodeContainer.innerHTML = `<p>Failed to load episodes for Season ${selectedSeason}.</p>`;
+    }
+  });
+
+  seasonDropdown.dispatchEvent(new Event('change'));
+}
+
 document.addEventListener("click", (event) => {
-  // Handle Watch Button (Movie)
   if (event.target.classList.contains("watch-btn")) {
     const id = event.target.dataset.id;
     const name = event.target.dataset.name;
     const mediaType = "movie";
     const season = episode = null;
-  //  window.location.href = `/watch/${mediaType}/${id}/${name}`;
+    //window.location.href = `watch/${mediaType}/${id}/${name}`;
     loadWatchPage(mediaType, name, id, season, episode);
   }
 
-  // Handle Episode Image Click (TV)
   if (event.target.closest(".episode img")) {
     const episodeElement = event.target.closest(".episode");
     const name = episodeElement.dataset.name;
@@ -401,8 +401,7 @@ document.addEventListener("click", (event) => {
     const season = episodeElement.dataset.season;
     const episode = episodeElement.dataset.episode;
     const mediaType = "tv";
-   // window.location.href = `/watch/${mediaType}/${id}/${name}${season && episode ? `/${season}/${episode}` : ''}`;
-  
+    //window.location.href = `watch/${mediaType}/${id}/${name}${season && episode ? `/${season}/${episode}` : ''}`;
     loadWatchPage(mediaType, name, id, season, episode);
   }
 });
@@ -416,13 +415,12 @@ document.addEventListener("click", (event) => {
   const season = path[3]; // Season number (if any)
   const episode = path[4]; // Episode number (if any)
 
+  console.log(mediaType, name, id, season, episode);
   if (mediaType && id && name) {
-    console.log(mediaType, name, id, season, episode);
+    //console.log(mediaType, name, id, season, episode);
     loadWatchPage(mediaType, name, id, season, episode);
   }
 }); */
-
-
 
 function loadWatchPage(mediaType, name = null, id, season = null, episode = null) {
   const info = `${mediaType === "movie" ? name : `S${season}:E${episode} ${name}`}`;
@@ -430,7 +428,6 @@ function loadWatchPage(mediaType, name = null, id, season = null, episode = null
 
   const watchPage = `
     <div class="watch-page">
-      <h2>${info}</h2>
       <div class="player-container">
         <div class="player">
           <!-- Placeholder until iframe loads -->
@@ -449,11 +446,40 @@ function loadWatchPage(mediaType, name = null, id, season = null, episode = null
           </div>
         </div>
       </div>
+      <h2>${info}</h2>
+      <div class="player-episodes">
+      </div>
     </div>
   `;
 
   document.querySelector("main").innerHTML = watchPage;
   document.querySelector("title").innerHTML = info;
+  
+  /* fetchMetaData(mediaType, id).then(({data}) => {
+    const cast = data.credits.cast.map(cast => cast.name).slice(0, 1).join(", ");
+    console.log(cast);
+    setTimeout(() => {
+      if (mediaType == 'tv') {
+        const seasons = data.seasons.reverse();
+        const tvInfo =`
+          <div class="season-info">
+            <div class="seasons-menu">
+              <select id="season-dropdown">
+                ${seasons
+                  .map(season => `
+                    <option value="${season.season_number}">${season.name}</option>
+                  `)
+                  .join("")}
+              </select>
+            </div>
+          <div class="episode-container" id="episode-container">
+          </div>`;
+        document.querySelector(".player-episodes").innerHTML = tvInfo;
+        tvContent(data);
+        document.querySelector(".episode-items p").style.display = "none";
+      };
+    }, 2500);
+  }); */
 
   // Initialize default source
   loadSources(source, mediaType, id, season, episode);

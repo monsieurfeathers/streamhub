@@ -236,7 +236,8 @@
         background-color: #141427;
         color: var(--font-color1);
         padding: 0rem;
-        justify-content: flex-end;
+        justify-content: flex-start;
+        gap: 0rem;
     }
     
     .watch-page h2 {
@@ -273,5 +274,10 @@
         background-color: #222233;
         border-radius: 0;
         align-content: center;
+    }
+    .player-episodes {
+        height: 30vh;
+        overflow: scroll;
+        margin: 0 0.6rem;
     }
   }

@@ -12,7 +12,8 @@ const sections = {
 function loadDiscoverContent(networkId = 213, providerId = 8, mediaType = 'movie') {
   const url = `${BASE_URL}/discover/${mediaType}?api_key=${API_KEY}&with_networks=${networkId}&with_watch_providers=${providerId}&watch_region=US&${OPTIONS}`;
   const sectionId = 'discover-streaming';
-  fetchContent(sectionId, url, limit = 14)
+  let limit = 14;
+  fetchContent(sectionId, url, limit);
 }
 
 function sectionMediaType(sectionId) {
@@ -97,7 +98,7 @@ function renderGridItems(items) {
         ? `${IMAGE_URL}${item.poster_path}`
         : 'https://placehold.co/440x661/383852/ccc?text=No+Image';
       return `
-        <div class="grid-item" data-id="${item.id}" data-media-type="${item.media_type}">
+        <div tabindex="0" role="button" aria-pressed="false" class="grid-item" id="grid-item" data-id="${item.id}" data-media-type="${item.media_type}">
           <div>
             <img src="${image}" alt="${title}">
           </div>
@@ -156,29 +157,33 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Handle Search
-async function handleSearch() {
+async function handleSearch(event) {
+  if (event) event.preventDefault(); // Prevent form submission
+  
   const query = document.getElementById('search-input').value.trim();
+  if (!query) return;
+
   const movieUrl = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
   const tvUrl = `${BASE_URL}/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
   const peopleUrl = `${BASE_URL}/search/person?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
 
   try {
-    var [movie, tv, people] = await Promise.all([
+    const [movie, tv, people] = await Promise.all([
       fetch(movieUrl).then(res => res.json()),
       fetch(tvUrl).then(res => res.json()),
       fetch(peopleUrl).then(res => res.json())
     ]);
 
-  var movie = movie.results.slice(0, 7).map(item => ({ ...item, media_type: 'movie' }));
-  var tv = tv.results.slice(0, 7).map(item => ({ ...item, media_type: 'tv' }));
-  var people = people.results.slice(0, 7).map(item => ({ ...item, media_type: 'person' }));
+    const movieResults = movie.results.slice(0, 7).map(item => ({ ...item, media_type: 'movie' }));
+    const tvResults = tv.results.slice(0, 7).map(item => ({ ...item, media_type: 'tv' }));
+    const peopleResults = people.results.slice(0, 7).map(item => ({ ...item, media_type: 'person' }));
 
-
-    displaySearchResults({ movie, tv, people}, query);
+    displaySearchResults({ movie: movieResults, tv: tvResults, people: peopleResults }, query);
   } catch (error) {
     console.error("Error fetching search results:", error);
   }
 }
+
 
 // Display search results
 
@@ -223,9 +228,9 @@ function renderProfile(items) {
 //    const year = extractYear(item.release_date || item.first_air_date);
       const image = item.profile_path
         ? `${IMAGE_URL}${item.profile_path}`
-        : 'https://placehold.co/440x661/383852/ccc?text=No+Image';
+        : 'https://placehold.co/440x551/383852/ccc?text=No+Image';
       return `
-        <div class="profile-item" data-id="${item.id}" data-media-type="${item.media_type}">
+        <div tabindex="0" class="profile-item" data-id="${item.id}" data-media-type="${item.media_type}">
           <span>
             <img src="${image}" alt="${name}">
           </span>
@@ -264,6 +269,7 @@ function convertDate(dateString) {
 }
 
 async function openModal(event) {
+  console.log('click event');
   const gridItem = event.target.closest('.grid-item'); // Identify the clicked item
   if (!gridItem) return;
 
@@ -293,8 +299,10 @@ function displayModal(mediaType, data) {
   const cast = data.credits.cast.map(cast => cast.name).slice(0, 5).join(", ");
   const date = convertDate(  data.release_date || data.first_air_date || data.air_date);  
   const logo = data.images?.logos?.[0]?.file_path
-    ? `<img src="${IMAGE_URL}${data.images.logos[0].file_path}" alt="Logo">`
-    : `<h1>${name}</h1>`;
+    ? `<span><div class="modal-info-logo"><img src="${IMAGE_URL}${data.images.logos[0].file_path}" alt="Logo"></div>
+       <div class="modal-info">`
+    : `<span><div class="modal-info">
+           <h1>${name}</h1>`;
   //window.history.pushState({}, '', `/${mediaType}/${name}`);
 
   if (mediaType === "movie") {
@@ -303,15 +311,15 @@ function displayModal(mediaType, data) {
         <div class="modal-cover">
           <img src="${IMAGE_URL}${data.poster_path}" alt="${name}"></img>
         </div>
-        <div class="modal-info">
-            ${logo || name}
+        ${logo}
             <p><strong>${data.genres.map(genre => genre.name).join(", ")}</strong></p>
             <p>${data.overview || 'No description available.'}</p>
-            <p><strong>Cast : ${cast}</strong></p>
-            <p><strong>Release On : ${date}</strong></p>
+            <p>Cast : ${cast}</p>
+            <p>Date : ${date}</p>
         </div>
+        </span>
       </div>
-      <div><button class="watch-btn" data-name="${name}" data-id="${id}">Watch</button></div>
+      <div class="modal-actions"><button class="watch-btn" data-name="${name}" data-id="${id}">Watch</button></div>
     `;
     modal.style.display = 'block';
 
@@ -323,13 +331,13 @@ function displayModal(mediaType, data) {
         <div class="modal-cover">
           <img src="${IMAGE_URL}${data.poster_path}" alt="${name}"></img>
         </div>
-        <div class="modal-info">
-          ${logo || name}
+        ${logo}
           <p><strong> ${data.genres.map(genre => genre.name).join(", ")}</strong></p>
           <p>${data.overview || 'No description available.'}</p>
-          <p><strong>Cast : ${cast}</strong></p>
-          <p>First Air Date: ${date}</p>
+          <p>Cast : ${cast}</p>
+          <p>Date : ${date}</p>
         </div>
+        </span>
       </div>
       <div class="season-info">
         <div class="seasons-menu">
@@ -341,16 +349,16 @@ function displayModal(mediaType, data) {
               .join("")}
           </select>
         </div>
-        <div class="episode-container" id="episode-container">
+        <div class="episode-container episode-wrap" id="episode-container">
         </div>
       </div>
     `;
     modal.style.display = 'block';
-    tvContent(data)
+    tvContent(data,ref = "modal");
   }
 }
 
-function tvContent(data) {
+async function tvContent(data, ref) {
   const seasonDropdown = document.getElementById('season-dropdown');
   const episodeContainer = document.getElementById('episode-container');
 
@@ -362,7 +370,7 @@ function tvContent(data) {
       episodeContainer.innerHTML = seasonData.episodes
         .map(episode => `
 
-          <div class="episode" data-name="${data.name}" data-id="${data.id}" data-season="${selectedSeason}" data-episode="${episode.episode_number}">
+          <div class="episode episode-width" data-name="${data.name}" data-id="${data.id}" data-season="${selectedSeason}" data-episode="${episode.episode_number}">
             <div class="episode-items">
               <img src="${episode.still_path ? IMAGE_URL + episode.still_path : 'https://placehold.co/500x281?text=No+Image+Available'}" alt="Episode ${episode.episode_number}">
               <div class="episode-info">
@@ -378,6 +386,12 @@ function tvContent(data) {
     } catch (error) {
       console.error('Error fetching season details:', error);
       episodeContainer.innerHTML = `<p>Failed to load episodes for Season ${selectedSeason}.</p>`;
+    }
+    if (ref != "modal") {
+      document.getElementById('episode-container').classList.add('player-styling');
+    }
+    else { 
+      console.log(" noice ");
     }
   });
 
@@ -402,25 +416,14 @@ document.addEventListener("click", (event) => {
     const episode = episodeElement.dataset.episode;
     const mediaType = "tv";
     //window.location.href = `watch/${mediaType}/${id}/${name}${season && episode ? `/${season}/${episode}` : ''}`;
-    loadWatchPage(mediaType, name, id, season, episode);
+    if (document.getElementById('episode-container').classList.contains('player-styling')) {    
+      loadSources(source = 1, mediaType, id, season, episode);
+    }
+    else {
+      loadWatchPage(mediaType, name, id, season, episode);
+    }
   }
 });
-
-/* document.addEventListener("DOMContentLoaded", () => {
-  const path = window.location.pathname.split('/').filter(Boolean);
-
-  const mediaType = path[0]; // "movie" or "tv"
-  const id = path[1]; // ID of the media
-  const name = path[2]; // Name of the media
-  const season = path[3]; // Season number (if any)
-  const episode = path[4]; // Episode number (if any)
-
-  console.log(mediaType, name, id, season, episode);
-  if (mediaType && id && name) {
-    //console.log(mediaType, name, id, season, episode);
-    loadWatchPage(mediaType, name, id, season, episode);
-  }
-}); */
 
 function loadWatchPage(mediaType, name = null, id, season = null, episode = null) {
   const info = `${mediaType === "movie" ? name : `S${season}:E${episode} ${name}`}`;
@@ -441,6 +444,12 @@ function loadWatchPage(mediaType, name = null, id, season = null, episode = null
                 <p data-source="1">Vidlink</p>
                 <p data-source="2">Embed.su</p>
                 <p data-source="3">Vidsrc</p>
+                <p data-source="4">Multiembed</p>
+              </div>
+            </div>
+            <div class="media-download">
+              <button class="download">Download</button>
+              <div class="get-dwnload">
               </div>
             </div>
           </div>
@@ -455,11 +464,10 @@ function loadWatchPage(mediaType, name = null, id, season = null, episode = null
   document.querySelector("main").innerHTML = watchPage;
   document.querySelector("title").innerHTML = info;
   
-  /* fetchMetaData(mediaType, id).then(({data}) => {
+  fetchMetaData(mediaType, id).then(({data}) => {
     const cast = data.credits.cast.map(cast => cast.name).slice(0, 1).join(", ");
     console.log(cast);
-    setTimeout(() => {
-      if (mediaType == 'tv') {
+    if (mediaType == 'tv') {
         const seasons = data.seasons.reverse();
         const tvInfo =`
           <div class="season-info">
@@ -472,14 +480,12 @@ function loadWatchPage(mediaType, name = null, id, season = null, episode = null
                   .join("")}
               </select>
             </div>
-          <div class="episode-container" id="episode-container">
+          <div class="episode-container episode-player" id="episode-container">
           </div>`;
         document.querySelector(".player-episodes").innerHTML = tvInfo;
-        tvContent(data);
-        document.querySelector(".episode-items p").style.display = "none";
-      };
-    }, 2500);
-  }); */
+        tvContent(data,ref = "player");
+    };
+  });
 
   // Initialize default source
   loadSources(source, mediaType, id, season, episode);
@@ -499,6 +505,7 @@ function loadWatchPage(mediaType, name = null, id, season = null, episode = null
   //window.history.pushState({}, '', `/watch/${mediaType}/${id}/${name}${season && episode ? `/${season}/${episode}` : ''}`);
 }
 
+// Sources
 function loadSources(source, mediaType, id, season = null, episode = null) {
   console.log(source);
   let src = "";
@@ -511,6 +518,9 @@ function loadSources(source, mediaType, id, season = null, episode = null) {
       break;
     case 3:
       src = `https://vidsrc.icu/embed/${mediaType}/${id}${season && episode ? `/${season}/${episode}` : ''}`;
+      break;
+    case 4:
+      src = `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1${season && episode ? `&s=${season}&p=${episode}` : ''}`;
       break;
     default:
       console.error("Invalid source selected");
@@ -551,12 +561,7 @@ window.addEventListener("popstate", (event) => {
   }
 });
 
-// Close modal on click
-function closeModal() {
-  document.getElementById('info-modal').style.display = 'none';
-  //window.history.pushState({}, '', `/`);
-  //window.history.back();
-}
+
 let lastScrollY = window.scrollY;
 let isScrollingDown = false;
 let hideTimeout;
@@ -582,7 +587,14 @@ window.addEventListener('scroll', () => {
   lastScrollY = window.scrollY;
 });
 
+// Close modal on click
+function closeModal() {
+  document.getElementById('info-modal').style.display = 'none';
+  //window.history.pushState({}, '', `/`);
+  //window.history.back();
+}
 
-
-// Attach event listener for modal
 document.addEventListener('click', openModal);
+
+
+console.clear = () => {};

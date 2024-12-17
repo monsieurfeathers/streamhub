@@ -269,10 +269,7 @@ function convertDate(dateString) {
 }
 
 async function openModal(event) {
-  console.log('click event');
-  const gridItem = event.target.closest('.grid-item'); // Identify the clicked item
-  if (!gridItem) return;
-
+  const gridItem = event.target.closest('.grid-item');
   const id = gridItem.dataset.id; // Get the ID of the item
   const sectionId = gridItem.closest('section')?.id; // Find the parent section's ID
   const mediaType = gridItem.closest('section')?.dataset.type ? gridItem.closest('section')?.dataset.type : sectionId ? sectionMediaType(sectionId) : null;
@@ -325,7 +322,6 @@ function displayModal(mediaType, data) {
 
   } else 
   if (mediaType === "tv") {
-    const seasons = data.seasons.reverse();
     details.innerHTML = `
       <div class="modal-media">
         <div class="modal-cover">
@@ -339,38 +335,50 @@ function displayModal(mediaType, data) {
         </div>
         </span>
       </div>
-      <div class="season-info">
-        <div class="seasons-menu">
-          <select id="season-dropdown">
-            ${seasons
-              .map(season => `
-                <option value="${season.season_number}">${season.name}</option>
-              `)
-              .join("")}
-          </select>
-        </div>
-        <div class="episode-container episode-wrap" id="episode-container">
-        </div>
-      </div>
     `;
     modal.style.display = 'block';
-    tvContent(data,ref = "modal");
+    tvContent(data, sno = null,ref = "modal");
   }
 }
 
-async function tvContent(data, ref) {
-  const seasonDropdown = document.getElementById('season-dropdown');
+async function tvContent(data, sno, ref) {
+  const selectSeason = Number(sno);
+  const seasons = data.seasons.reverse();
+  const containerClass = ref === "modal" ? "episode-wrap" : "episode-player";
+  const tvInfo =`
+    <div class="season-info">
+      <div class="seasons-menu">
+        <select id="season-dropdown">
+           ${seasons
+              .map(season => `
+                <option value="${season.season_number}" 
+                ${season.season_number === selectSeason ? "selected" : ""}>
+                ${season.name}
+                </option>
+              `)
+              .join("")}
+        </select>
+      </div>
+    <div class="episode-container ${containerClass}" id="episode-container">
+    </div>
+    </div>
+    `;
+    //modal
+    document.querySelector(".modal-media")?.insertAdjacentHTML('afterend',tvInfo);
+    //player
+    ref !== "modal" ? document.querySelector(".player-episodes").innerHTML = tvInfo : "";
+  
+  //episode info
   const episodeContainer = document.getElementById('episode-container');
-
-  seasonDropdown.addEventListener('change', async (event) => {
+    
+  const displaySeasonInfo = async (event) => { 
     const selectedSeason = event.target.value;
     try {
       const response = await fetch(`${BASE_URL}/tv/${data.id}/season/${selectedSeason}?api_key=${API_KEY}`);
       const seasonData = await response.json();
       episodeContainer.innerHTML = seasonData.episodes
         .map(episode => `
-
-          <div class="episode episode-width" data-name="${data.name}" data-id="${data.id}" data-season="${selectedSeason}" data-episode="${episode.episode_number}">
+          <div id="${episode.episode_number}" class="episode episode-width" data-name="${data.name}" data-id="${data.id}" data-season="${selectedSeason}" data-episode="${episode.episode_number}">
             <div class="episode-items">
               <img src="${episode.still_path ? IMAGE_URL + episode.still_path : 'https://placehold.co/500x281?text=No+Image+Available'}" alt="Episode ${episode.episode_number}">
               <div class="episode-info">
@@ -383,6 +391,7 @@ async function tvContent(data, ref) {
           </div>
         `)
         .join("");
+
     } catch (error) {
       console.error('Error fetching season details:', error);
       episodeContainer.innerHTML = `<p>Failed to load episodes for Season ${selectedSeason}.</p>`;
@@ -393,8 +402,12 @@ async function tvContent(data, ref) {
     else { 
       console.log(" noice ");
     }
-  });
 
+  };
+
+  const seasonDropdown = document.getElementById('season-dropdown');
+  seasonDropdown.removeEventListener('change', displaySeasonInfo);
+  seasonDropdown.addEventListener('change', displaySeasonInfo);
   seasonDropdown.dispatchEvent(new Event('change'));
 }
 
@@ -404,6 +417,7 @@ document.addEventListener("click", (event) => {
     const name = event.target.dataset.name;
     const mediaType = "movie";
     const season = episode = null;
+
     //window.location.href = `watch/${mediaType}/${id}/${name}`;
     loadWatchPage(mediaType, name, id, season, episode);
   }
@@ -415,21 +429,27 @@ document.addEventListener("click", (event) => {
     const season = episodeElement.dataset.season;
     const episode = episodeElement.dataset.episode;
     const mediaType = "tv";
+    const info = `${mediaType === "movie" ? name : `S${season}:E${episode} ${name}`}`;
+
     //window.location.href = `watch/${mediaType}/${id}/${name}${season && episode ? `/${season}/${episode}` : ''}`;
     if (document.getElementById('episode-container').classList.contains('player-styling')) {    
       loadSources(source = 1, mediaType, id, season, episode);
+      document.querySelector("title").innerHTML = info;
+      info !== null ? document.querySelector(".now-playing").innerHTML = info : null;
     }
     else {
       loadWatchPage(mediaType, name, id, season, episode);
     }
+
   }
 });
 
 function loadWatchPage(mediaType, name = null, id, season = null, episode = null) {
   const info = `${mediaType === "movie" ? name : `S${season}:E${episode} ${name}`}`;
+  const watchPage = document.querySelector("main");
   let source = 1;
 
-  const watchPage = `
+  watchPage.innerHTML = `
     <div class="watch-page">
       <div class="player-container">
         <div class="player">
@@ -455,35 +475,18 @@ function loadWatchPage(mediaType, name = null, id, season = null, episode = null
           </div>
         </div>
       </div>
-      <h2>${info}</h2>
+      <h2 class="now-playing"></h2>
       <div class="player-episodes">
       </div>
     </div>
   `;
-
-  document.querySelector("main").innerHTML = watchPage;
   document.querySelector("title").innerHTML = info;
-  
+  document.querySelector(".now-playing").innerHTML = info;
+
   fetchMetaData(mediaType, id).then(({data}) => {
-    const cast = data.credits.cast.map(cast => cast.name).slice(0, 1).join(", ");
-    console.log(cast);
+    const sno = season;
     if (mediaType == 'tv') {
-        const seasons = data.seasons.reverse();
-        const tvInfo =`
-          <div class="season-info">
-            <div class="seasons-menu">
-              <select id="season-dropdown">
-                ${seasons
-                  .map(season => `
-                    <option value="${season.season_number}">${season.name}</option>
-                  `)
-                  .join("")}
-              </select>
-            </div>
-          <div class="episode-container episode-player" id="episode-container">
-          </div>`;
-        document.querySelector(".player-episodes").innerHTML = tvInfo;
-        tvContent(data,ref = "player");
+        tvContent(data, sno, ref = "player");
     };
   });
 
@@ -594,7 +597,10 @@ function closeModal() {
   //window.history.back();
 }
 
-document.addEventListener('click', openModal);
-
+document.addEventListener('click', function(event) {
+    if (event.target.closest('.grid-item')) {
+        openModal(event);
+    }
+});
 
 console.clear = () => {};

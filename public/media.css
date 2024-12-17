@@ -6,7 +6,7 @@
     }
 
     header {
-        height: 3.2rem;
+        height: 3.6rem;
     }
 
     nav ul {
@@ -22,18 +22,19 @@
     }
 
     main {
-        padding: 3.2rem 0 0 0;
+        padding: 3.6rem 0 0 0;
     }
     
     section {
         max-width: 100%;
-        padding: 0 0.6rem;
-        margin: var(--padding1) 0 1rem 0;
+        padding: 0.2rem 0.6rem;
+        margin: 0.6rem 0;
         gap: 0.36rem;
     }
 
     section h2 {
-        font-size: 1.36rem;
+        font-size: 1.25rem;
+        margin: 0.2rem 0 0.4rem;
     }
 
     .grid-container {
@@ -90,13 +91,14 @@
 
 
     #search-results {
-        margin: 0.4rem 0 0 0;
+        margin: 0.6rem 0 0 0;
         border: none;
     }
 
     #search-results h1 {
-        font-size: 1.355rem;
-        margin: 0.4rem 0 0.6rem 0.6rem;
+        font-weight: 600;
+        font-size: 1.25rem;
+        margin: 0.8rem 0 0rem 0.6rem;
     }
     
     #search-results > section {
@@ -107,13 +109,15 @@
     }
     
     #search-results > section > h3 {
-        font-size: 1.25rem;
+        font-weight: 600;
+        font-size: 1rem;
         display: block;
         width: 100%;
     }
 
      .profile-item {
-        height: 8.4rem;
+        height: 8rem;
+        min-width: fit-content;
         border-radius: var(--border-radius1);
         /* box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7); */
     }
@@ -122,14 +126,19 @@
         transform: scale(0.96);
         box-shadow: 0 4px 8px rgb(8, 8, 22);
     }
+
+
     
     .profile-item img {
-        height: auto;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
         aspect-ratio: 1 / 1.1;
     }
     
 
     .profile-item-info p {
+        padding: 0 0.2rem;
         font-size: 0.7rem;
         line-height: 0.78rem;
     }
@@ -200,7 +209,7 @@
         flex-direction: column;
         justify-content: space-between;
         gap: 0.8rem;
-        height: unset;
+        min-height: fit-content;
     }
     
     
@@ -212,9 +221,11 @@
     }
 
     .modal-media > span {
-        max-width: unset;
+        max-width: 100%;
         width: 100%;
-        height: 100%;
+        max-height: fit-content;
+        height: fit-content;
+        min-height: fit-content;
         justify-content: normal;
     }
 
@@ -228,7 +239,7 @@
     }
 
     .modal-info p {
-        padding: 0.4rem 5% 0rem 0;
+        padding: 0.4rem 0.2rem 0rem 0;
         font-size: 0.7rem;
         line-height: 0.8rem;
     }
@@ -282,7 +293,6 @@
     }
 
     .watch-page {
-        background-color: #141427;
         color: var(--font-color1);
         padding: 0rem;
         justify-content: flex-start;

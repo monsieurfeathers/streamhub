@@ -13,13 +13,19 @@
   :root {
     --color1: #383852;
     --color2: #4a4a69;
-    --font-color1: #d8d8d8;
+    --color3: #222233;
+    --color4: #121225;
+    --font-color1: #ccc0f8;
     --font-color2: #aaa;
     --font-color3: #888;
     --active-color: red;
-    --bg-color: #141427;
+    --bg-color: #101023;
     --border-radius1: 0.6rem;
     --border-radius2: 0.3rem;
+    --error: #a6192e;
+    --caution: #ff9900;
+    --success: #04b34f;
+    --info: #0057b8;
     --font-style1: "Geist", sans-serif;
     --padding1: 0.6rem;
     font-size: 100%;
@@ -29,7 +35,7 @@ body {
 
     font-family: var(--font-style1);
     font-size: 1rem;
-    background-color: #151527;
+    background-color: var(--bg-color); /* 151527 */
     color: var(--font-color1);
     scrollbar-color: var(--color1) #222233 ;
     height: 100%;
@@ -45,7 +51,8 @@ header {
     padding: 0;
     margin: 0;
     align-content: center;
-    background-color: #0e0e1bbd;
+    background-color: #141427b7 ;
+    border-bottom: 1px solid var(--color3);
     backdrop-filter: blur(10px);
     transition: all 0.5s ease-in-out;
     z-index: 1000;
@@ -138,7 +145,8 @@ section {
 }
 
 section h2 {
-    font-size: 1.6rem;
+    font-weight: 600;
+    font-size: 1.4rem;
     margin: var(--padding1) 0;
     text-align: left;
 }
@@ -163,7 +171,8 @@ section h2 {
     text-align: center;
     border-radius: var(--border-radius1);
     padding: var(--padding1);
-    border: 1px solid #222233;
+    border: 1px solid var(--color3);
+    background-color: #161629;
     transition: transform 0.3s, box-shadow 0.3s, border 0.3s;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     /* box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7); */
@@ -317,6 +326,7 @@ section h2 {
 }
 
 #search-results h1 {
+    font-weight: 600;
     font-size: 1.6rem;
     margin: 0.8rem 1.4rem 0.6rem;
     padding: 0;
@@ -333,6 +343,7 @@ section h2 {
 }
 
 #search-results > section > h3 {
+    font-weight: 600;
     font-size: 1.4rem;
     width: 100%;
 }
@@ -341,9 +352,8 @@ section h2 {
     visibility: visible;
     display: flex;
     flex-direction: column;
-    aspect-ratio: 1 / 1.4;
     max-width: 100%;
-    height: 10rem;
+    aspect-ratio: 1 / 1.4;
     margin-bottom: calc(var(--padding1) * 1.8);
     padding: 0;
     overflow: hidden;
@@ -438,7 +448,7 @@ section h2 {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    height: 80%;
+    min-height: 80%;
     width: 100%;
     gap: 2rem;
 }
@@ -670,7 +680,6 @@ option {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: #141427;
     color: var(--font-color1);
     padding: 1.2rem 1rem;
     gap: 1.2rem;

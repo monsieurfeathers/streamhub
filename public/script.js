@@ -186,7 +186,6 @@ async function handleSearch(event) {
 
 
 // Display search results
-
 function displaySearchResults({ movie, tv, people }, query) {
   const mainContent = document.querySelector('main');
   mainContent.innerHTML = `
@@ -296,10 +295,14 @@ function displayModal(mediaType, data) {
   const cast = data.credits.cast.map(cast => cast.name).slice(0, 5).join(", ");
   const date = convertDate(  data.release_date || data.first_air_date || data.air_date);  
   const logo = data.images?.logos?.[0]?.file_path
-    ? `<span><div class="modal-info-logo"><img loading="lazy" src="${IMAGE_URL}${data.images.logos[0].file_path}" alt="Logo"></div>
-       <div class="modal-info">`
-    : `<span><div class="modal-info">
-           <h1>${name}</h1>`;
+    ? `<span>
+          <div class="modal-info-logo">
+            <img loading="lazy" src="${IMAGE_URL}${data.images.logos[0].file_path}" alt="Logo">
+          </div>
+          <div class="modal-info">`
+    : `<span>
+          <div class="modal-info">
+            <h1>${name}</h1>`;
   //window.history.pushState({}, '', `/${mediaType}/${name}`);
   details.innerHTML = `
   <div class="modal-media">
@@ -307,11 +310,10 @@ function displayModal(mediaType, data) {
       <img loading="lazy" src="${IMAGE_URL}${data.poster_path}" alt="${name}"></img>
     </div>
     ${logo}
-        ${data.genres
-          .map(genre => `
-            <a href="#">${genre.name}</a>
-        `)
-        .slice(0, 3).join(" ")}
+        <span class="ratings-genre"><i class="fa-solid fa-star"></i> <p>${truncate(data.vote_average, 1)}</p><span class="modal-genre">${data.genres
+          .map(genre => `<a href="#">${genre.name}</a>` ).slice(0, 3).join(" ")}
+          </span>
+        </span>
         <p>${data.overview || 'No description available.'}</p>
         <p>Cast : ${cast}</p>
         <p>Date : ${date}</p>
@@ -320,7 +322,16 @@ function displayModal(mediaType, data) {
   </div>`;
   
   if (mediaType === "movie") {
-    document.querySelector(".modal-media").insertAdjacentHTML('afterend', `<div class="modal-actions"><button class="watch-btn" data-name="${name}" data-id="${id}">Watch</button></div>`);
+    document.querySelector(".modal-media")
+    .insertAdjacentHTML('afterend', `
+      <div class="modal-actions">
+        <button class="watch-btn" 
+        data-name="${name}" 
+        data-id="${id}">
+          Watch
+        </button>
+      </div>
+      `);
   } else 
   if (mediaType === "tv") {
     tvContent(data, sno = null, eno = null, ref = "modal");
